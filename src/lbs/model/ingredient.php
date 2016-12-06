@@ -8,4 +8,10 @@ class ingredient extends \Illuminate\Database\Eloquent\Model
 	protected $primaryKey = 'id';
 	
 	public $timestamps = false;
+	
+	// contenir
+	public function sandwichsIngredient()
+	{
+		return $this->belongsToMany("\model\sandwich","contenir","id_ingredient","id");
+	}
 }
