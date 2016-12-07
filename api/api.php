@@ -17,6 +17,41 @@ $app->get('/categories/{id}',
 	{
 		return (new lbs\control\lbscontrol($this))->detailsCategorie($req, $resp, $args);
 	}
-)->setName('afficherCategorie');
+)->setName('detailsCategorie');
+
+$app->get('/categories',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->toutesCategories($req, $resp, $args);
+	}
+)->setName('toutesCategories');
+
+$app->get('/ingredients/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->detailsIngredient($req, $resp, $args);
+	}
+)->setName('detailsIngredient');
+
+$app->get('/categories/{id}/ingredients',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->ingredientsCategorie($req, $resp, $args);
+	}
+)->setName('ingredientsCategorie');
+
+$app->get('/ingredients/{id}/categorie',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->categorieIngredient($req, $resp, $args);
+	}
+)->setName('categorieIngredient');
+
+$app->post('/commandes',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->creerCommande($req, $resp, $args);
+	}
+)->setName('creerCommande');
 
 $app->run();
