@@ -69,4 +69,26 @@ class lbscontrol
 		$json = \lbs\model\commande::where('id', $id)->get()->toJson();
 		return (new \lbs\view\lbsview($json))->render('etatCommande', $req, $resp);
     }
+
+	public function dateCommande(Request $req, Response $resp, $args)
+	{
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		$date = date_parse($args['date']);
+
+		$commande = \lbs\model\commande::find($id);
+		if($commande === false)
+			return (new \lbs\view\lbsview('[]'))->render('dateCommande', $req, $resp);
+		if($date === false)
+			return (new \lbs\view\lbsview(false))->render('dateCommande', $req, $resp);
+		if(!checkdate($date['month'], $date['day'], $date['year']))
+			return (new \lbs\view\lbsview(false))->render('dateCommande', $req, $resp);
+		if(mktime(0, 0, 0, $date['month'], $date['day'], $date['year']) < time())
+			return (new \lbs\view\lbsview(false))->render('dateCommande', $req, $resp);
+
+		$commande->dateretrait = $date['year'].'-'.$date['month'].'-'.$date['day'];
+		if($commande->save()) {
+			$json = $commande->toJson();
+			return (new \lbs\view\lbsview($json))->render('dateCommande', $req, $resp);
+		}
+    }
 }

@@ -61,4 +61,11 @@ $app->get('/commande/{id}',
 	}
 )->setName('etatCommande');
 
+$app->post('/commande/{id}/{date}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->dateCommande($req, $resp, $args);
+	}
+)->setName('dateCommande');
+
 $app->run();

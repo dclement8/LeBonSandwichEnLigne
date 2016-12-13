@@ -126,6 +126,33 @@ class lbsview
 		return $resp;
 	}
 
+	private function dateCommande($req, $resp)
+	{
+		$json = "";
+		if($this->data === false)
+		{
+			$tab = array("error" => "bad request : ".$req->getUri());
+			$json = json_encode($tab);
+			$resp = $resp->withStatus(400);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		elseif($this->data == "[]")
+		{
+			$tab = array("error" => "ressource not found : ".$req->getUri());
+			$json = json_encode($tab);
+			$resp = $resp->withStatus(404);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = $this->data;
+			$json = '{ "commande" : '.$json.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+	}
+
 	public function render($selector, $req, $resp)
 	{
 		switch($selector)
@@ -147,6 +174,9 @@ class lbsview
 				break;
 			case "etatCommande":
 				$this->resp = $this->etatCommande($req, $resp);
+				break;
+			case "dateCommande":
+				$this->resp = $this->dateCommande($req, $resp);
 				break;
 		}
 
