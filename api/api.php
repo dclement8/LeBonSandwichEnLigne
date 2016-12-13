@@ -54,4 +54,11 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
+$app->get('/commande/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->etatCommande($req, $resp, $args);
+	}
+)->setName('etatCommande');
+
 $app->run();
