@@ -54,11 +54,11 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
-$app->get('/commande/{id}',
+$app->post('/sandwichs',
 	function (Request $req, Response $resp, $args)
 	{
-		return (new lbs\control\lbscontrol($this))->etatCommande($req, $resp, $args);
+		return (new lbs\control\lbscontrol($this))->ajouterSandwich($req, $resp, $args);
 	}
-)->setName('etatCommande');
+)->setName('ajouterSandwich');
 
 $app->run();
