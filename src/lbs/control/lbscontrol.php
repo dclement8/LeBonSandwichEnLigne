@@ -84,7 +84,7 @@ class lbscontrol
 	
 	public function ajouterSandwich(Request $req, Response $resp, $args)
 	{
-		$obj = json_decode($_POST["json"]);
+		/*$obj = json_decode($_POST["json"]);
 		
 		if(isset($obj->sandwichs as $unSandwich))
 		{
@@ -99,6 +99,6 @@ class lbscontrol
 				$ingredient = lbs\model\ingredient::find($unIngredient);
 				$ingredient->sandwichsIngredient()->attach($sandwich->id);
 			}
-		}
+		}*/
 	}
 }
