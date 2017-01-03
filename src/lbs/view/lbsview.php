@@ -180,6 +180,14 @@ class lbsview
 		return $resp;
     }
 
+	private function modifierSandwich($req, $resp, $args)
+	{
+		$json = "[]";
+		$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		$resp->getBody()->write($json);
+		return $resp;
+    }
+
 	public function render($selector, $req, $resp, $args)
 	{
 		switch($selector)
@@ -207,6 +215,9 @@ class lbsview
 				break;
 			case "supprimerSandwich":
 				$this->resp = $this->supprimerSandwich($req, $resp, $args);
+				break;
+			case "modifierSandwich":
+				$this->resp = $this->modifierSandwich($req, $resp, $args);
 				break;
 			case "dateCommande":
 				$this->resp = $this->dateCommande($req, $resp);

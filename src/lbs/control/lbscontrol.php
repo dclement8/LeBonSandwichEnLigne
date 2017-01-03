@@ -185,4 +185,10 @@ class lbscontrol
 			return (new \lbs\view\lbsview($arr))->render('supprimerSandwich', $req, $resp, $args);
 		}
 	}
+
+	public function modifierSandwich(Request $req, Response $resp, $args)
+	{
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		$json = "[]";
+	}
 }
