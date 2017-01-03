@@ -54,12 +54,12 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
-$app->get('/commande/{id}',
+$app->post('/commandes/{id}/sandwich/{id2}',
 	function (Request $req, Response $resp, $args)
 	{
-		return (new lbs\control\lbscontrol($this))->etatCommande($req, $resp, $args);
+		return (new lbs\control\lbscontrol($this))->ajouterSandwich($req, $resp, $args);
 	}
-)->setName('etatCommande');
+)->setName('ajouterSandwich');
 
 $app->post('/commande/{id}/{date}',
 	function (Request $req, Response $resp, $args)
@@ -67,5 +67,12 @@ $app->post('/commande/{id}/{date}',
 		return (new lbs\control\lbscontrol($this))->dateCommande($req, $resp, $args);
 	}
 )->setName('dateCommande');
+
+$app->delete('/sandwichs/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->supprimerSandwich($req, $resp, $args);
+	}
+)->setName('supprimerSandwich');
 
 $app->run();

@@ -106,20 +106,32 @@ class lbsview
 		return $resp;
     }
 
-	private function etatCommande($req, $resp)
+	private function creerCommande($req, $resp)
 	{
-		$json = "";
-		if($this->data == "[]")
+		if($this->data == null)
 		{
-			$tab = array("error" => "ressource not found : ".$req->getUri());
-			$json = json_encode($tab);
-			$resp = $resp->withStatus(404);
-			$resp = $resp->withHeader('Content-Type', 'application/json');
+			$json = '{ "token" : "'.$this->data.'" }';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
 		}
 		else
 		{
-			$json = $this->data;
-			$json = '{ "commande" : '.$json.'}';
+			$json = '{ "error" : "données manquantes pour la création de la commande" }';
+			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+    }
+
+	private function ajouterSandwich($req, $resp)
+	{
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "sandwich" : '.$this->data->id.' }';
 			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
 		}
 		$resp->getBody()->write($json);
@@ -151,6 +163,22 @@ class lbsview
 		}
 		$resp->getBody()->write($json);
 		return $resp;
+    }
+
+	private function supprimerSandwich($req, $resp)
+	{
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "commande" : '.$this->data.' }';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
 	}
 
 	public function render($selector, $req, $resp)
@@ -172,8 +200,14 @@ class lbsview
 			case "categorieIngredient":
 				$this->resp = $this->categorieIngredient($req, $resp);
 				break;
-			case "etatCommande":
-				$this->resp = $this->etatCommande($req, $resp);
+			case "creerCommande":
+				$this->resp = $this->creerCommande($req, $resp);
+				break;
+			case "ajouterSandwich":
+				$this->resp = $this->ajouterSandwich($req, $resp);
+				break;
+			case "supprimerSandwich":
+				$this->resp = $this->supprimerSandwich($req, $resp);
 				break;
 			case "dateCommande":
 				$this->resp = $this->dateCommande($req, $resp);
