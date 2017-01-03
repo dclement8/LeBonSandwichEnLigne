@@ -7,13 +7,12 @@ use \Psr\Http\Message\ResponseInterface as Response;
 class lbsview
 {
 	protected $data = null ;
-    
+
     public function __construct($data)
 	{
         $this->data = $data;
     }
-	
-	
+
     private function detailsCategorie($req, $resp, $args)
 	{
 		$json = "";
@@ -35,7 +34,7 @@ class lbsview
 		$resp->getBody()->write($json);
 		return $resp;
     }
-	
+
 	private function toutesCategories($req, $resp, $args)
 	{
 		$json = '{ "categories" : '.$this->data.' }';
@@ -43,7 +42,7 @@ class lbsview
 		$resp->getBody()->write($json);
 		return $resp;
 	}
-	
+
 	private function detailsIngredient($req, $resp, $args)
 	{
 		$json = "";
@@ -65,7 +64,7 @@ class lbsview
 		$resp->getBody()->write($json);
 		return $resp;
     }
-	
+
 	private function ingredientsCategorie($req, $resp, $args)
 	{
 		$json = "";
@@ -85,7 +84,7 @@ class lbsview
 		$resp->getBody()->write($json);
 		return $resp;
     }
-	
+
 	private function categorieIngredient($req, $resp, $args)
 	{
 		$json = "";
@@ -105,7 +104,7 @@ class lbsview
 		$resp->getBody()->write($json);
 		return $resp;
     }
-	
+
 	private function creerCommande($req, $resp, $args)
 	{
 		if($this->data == null)
@@ -121,7 +120,7 @@ class lbsview
 		$resp->getBody()->write($json);
 		return $resp;
     }
-	
+
 	private function ajouterSandwich($req, $resp, $args)
 	{
 		if(is_array($this->data))
@@ -136,8 +135,35 @@ class lbsview
 		}
 		$resp->getBody()->write($json);
 		return $resp;
+	}
+
+	private function dateCommande($req, $resp, $args)
+	{
+		$json = "";
+		if($this->data === false)
+		{
+			$tab = array("error" => "bad request, incorrect date or the date has already passed : ".$req->getUri());
+			$json = json_encode($tab);
+			$resp = $resp->withStatus(400);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		elseif($this->data == "[]")
+		{
+			$tab = array("error" => "ressource not found : ".$req->getUri());
+			$json = json_encode($tab);
+			$resp = $resp->withStatus(404);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = $this->data;
+			$json = '{ "commande" : '.$json.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
     }
-	
+
 	private function supprimerSandwich($req, $resp, $args)
 	{
 		if(is_array($this->data))
@@ -153,7 +179,7 @@ class lbsview
 		$resp->getBody()->write($json);
 		return $resp;
     }
-	
+
 	public function render($selector, $req, $resp, $args)
 	{
 		switch($selector)
@@ -182,8 +208,11 @@ class lbsview
 			case "supprimerSandwich":
 				$this->resp = $this->supprimerSandwich($req, $resp, $args);
 				break;
+			case "dateCommande":
+				$this->resp = $this->dateCommande($req, $resp);
+				break;
 		}
-		
+
 		return $this->resp;
 	}
 }
