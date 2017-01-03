@@ -131,7 +131,7 @@ class lbsview
 		$json = "";
 		if($this->data === false)
 		{
-			$tab = array("error" => "bad request : ".$req->getUri());
+			$tab = array("error" => "bad request, incorrect date or the date has already passed : ".$req->getUri());
 			$json = json_encode($tab);
 			$resp = $resp->withStatus(400);
 			$resp = $resp->withHeader('Content-Type', 'application/json');

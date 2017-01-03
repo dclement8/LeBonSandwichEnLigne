@@ -73,6 +73,7 @@ class lbscontrol
 	public function dateCommande(Request $req, Response $resp, $args)
 	{
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		// Date dans un format accepté par la fonction strtotime(), par exemple aaaa-mm-dd
 		$date = date_parse($args['date']);
 
 		$commande = \lbs\model\commande::find($id);
@@ -82,7 +83,8 @@ class lbscontrol
 			return (new \lbs\view\lbsview(false))->render('dateCommande', $req, $resp);
 		if(!checkdate($date['month'], $date['day'], $date['year']))
 			return (new \lbs\view\lbsview(false))->render('dateCommande', $req, $resp);
-		if(mktime(0, 0, 0, $date['month'], $date['day'], $date['year']) < time())
+		// On compare avec le timestamp d'aujourd'hui à minuit
+		if(mktime(0, 0, 0, $date['month'], $date['day'], $date['year']) < mktime(0, 0, 0, date('m'), date('d'), date('Y')))
 			return (new \lbs\view\lbsview(false))->render('dateCommande', $req, $resp);
 
 		$commande->dateretrait = $date['year'].'-'.$date['month'].'-'.$date['day'];
