@@ -84,21 +84,83 @@ class lbscontrol
 	
 	public function ajouterSandwich(Request $req, Response $resp, $args)
 	{
-		/*$obj = json_decode($_POST["json"]);
-		
-		if(isset($obj->sandwichs as $unSandwich))
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		$id2 = filter_var($args['id2'], FILTER_SANITIZE_NUMBER_INT);
+		$json = "[]";
+		if(\lbs\model\commande::where('id', $id)->get()->toJson() != "[]")
 		{
-			$sandwich = new lbs\model\sandwich();
-			$sandwich->taillepain = filter_var($unSandwich->taille, FILTER_SANITIZE_NUMBER_INT);
-			$sandwich->typepain = filter_var($unSandwich->typepain, FILTER_SANITIZE_NUMBER_INT);
-			$sandwich->id_commande = $commande->id;
-			$sandwich->save();
-			
-			foreach($unSandwich->ingredients as $unIngredient)
+			$commande = \lbs\model\commande::select('etat')->where('id', $id)-get();
+			$etatCommande = "";
+			foreach ($commande as $etat)
 			{
-				$ingredient = lbs\model\ingredient::find($unIngredient);
-				$ingredient->sandwichsIngredient()->attach($sandwich->id);
+				$etatCommande = $etat->etat;
 			}
-		}*/
+			
+			if(($etatCommande == 1) || ($etatCommande == 2))
+			{
+				if(\lbs\model\sandwich::where('id', $id2)->get()->toJson() != "[]")
+				{
+					$leSandwich = \lbs\model\sandwich::find($id2);
+					$leSandwich->id_commande = $id;
+					$leSandwich->save();
+					
+					return (new \lbs\view\lbsview($leSandwich))->render('ajouterSandwich', $req, $resp);
+				}
+				else
+				{
+					$arr = array('error' => 'sandwich introuvable');
+					return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp);
+				}
+			}
+			else
+			{
+				$arr = array('error' => 'impossible de modifier la commande');
+				return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp);
+			}
+		}
+		else
+		{
+			$arr = array('error' => 'commande introuvable');
+			return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp);
+		}
+	}
+	
+	public function supprimerSandwich(Request $req, Response $resp, $args)
+	{
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		$json = "[]";
+		if(\lbs\model\sandwich::where('id', $id)->get()->toJson() != "[]")
+		{
+			$reqCommande = \lbs\model\sandwich::select('id_commande')->where('id', $id)-get();
+			$idCommande = "";
+			foreach ($reqCommande as $idCom)
+			{
+				$idCommande = $idCom->id_commande;
+			}
+			
+			$commande = \lbs\model\commande::select('etat')->where('id', $idCommande)-get();
+			$etatCommande = "";
+			foreach ($commande as $etat)
+			{
+				$etatCommande = $etat->etat;
+			}
+			
+			if(($etatCommande == 1) || ($etatCommande == 2))
+			{
+				\lbs\model\sandwich::destroy($id);
+					
+				return (new \lbs\view\lbsview($idCommande))->render('supprimerSandwich', $req, $resp);
+			}
+			else
+			{
+				$arr = array('error' => 'impossible de modifier la commande');
+				return (new \lbs\view\lbsview($arr))->render('supprimerSandwich', $req, $resp);
+			}
+		}
+		else
+		{
+			$arr = array('error' => 'sandwich introuvable');
+			return (new \lbs\view\lbsview($arr))->render('supprimerSandwich', $req, $resp);
+		}
 	}
 }

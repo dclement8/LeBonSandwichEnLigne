@@ -122,6 +122,38 @@ class lbsview
 		return $resp;
     }
 	
+	private function ajouterSandwich($req, $resp)
+	{
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "sandwich" : '.$this->data->id.' }';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+    }
+	
+	private function supprimerSandwich($req, $resp)
+	{
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "commande" : '.$this->data.' }';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+    }
+	
 	public function render($selector, $req, $resp)
 	{
 		switch($selector)
@@ -143,6 +175,12 @@ class lbsview
 				break;
 			case "creerCommande":
 				$this->resp = $this->creerCommande($req, $resp);
+				break;
+			case "ajouterSandwich":
+				$this->resp = $this->ajouterSandwich($req, $resp);
+				break;
+			case "supprimerSandwich":
+				$this->resp = $this->supprimerSandwich($req, $resp);
 				break;
 		}
 		

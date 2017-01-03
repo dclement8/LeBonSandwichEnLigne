@@ -54,11 +54,18 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
-$app->post('/sandwichs',
+$app->post('/commandes/{id}/sandwich/{id2}',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->ajouterSandwich($req, $resp, $args);
 	}
 )->setName('ajouterSandwich');
+
+$app->delete('/sandwichs/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->supprimerSandwich($req, $resp, $args);
+	}
+)->setName('supprimerSandwich');
 
 $app->run();
