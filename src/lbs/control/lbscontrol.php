@@ -105,27 +105,12 @@ class lbscontrol
 
 			if(($etatCommande == 1) || ($etatCommande == 2))
 			{
-<<<<<<< HEAD
 				$leSandwich = new \lbs\model\sandwich();
 				
 				$leSandwich->id_commande = $token;
 				$leSandwich->save();
 				
 				return (new \lbs\view\lbsview($leSandwich))->render('ajouterSandwich', $req, $resp, $args);
-=======
-				if(\lbs\model\sandwich::where('id', $id2)->get()->toJson() != "[]")
-				{
-					$leSandwich = \lbs\model\sandwich::find($id2);
-					$leSandwich->id_commande = $id;
-					$leSandwich->save();
-					return (new \lbs\view\lbsview($leSandwich))->render('ajouterSandwich', $req, $resp, $args);
-				}
-				else
-				{
-					$arr = array('error' => 'sandwich introuvable : '.$req->getUri());
-					return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
-				}
->>>>>>> origin/master
 			}
 			else
 			{
