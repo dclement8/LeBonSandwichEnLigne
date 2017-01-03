@@ -38,7 +38,7 @@ class lbsview
 	
 	private function toutesCategories($req, $resp, $args)
 	{
-		$json = '{ "categories" : '.$this->data.' , "links" : { "all" : { "href" : "/categories" } } }';
+		$json = '{ "categories" : '.$this->data.' }';
 		$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
 		$resp->getBody()->write($json);
 		return $resp;
@@ -110,7 +110,7 @@ class lbsview
 	{
 		if($this->data == null)
 		{
-			$json = '{ "token" : "'.$this->data.'" , "links" : { "view" : { "href" : "/commandes/'.$this->data.'" } , "addSandwich" : { "href" : "/commandes/'.$this->data.'/sandwich/_id" } } }';
+			$json = '{ "token" : "'.$this->data.'" , "links" : { "view" : { "href" : "/commandes/'.$this->data.'" } } }';
 			$resp = $resp->withStatus(201)->withHeader('Content-Type', 'application/json');
 		}
 		else
@@ -147,7 +147,7 @@ class lbsview
 		}
 		else
 		{
-			$json = '{ "commande" : '.$this->data.' , "links" : { "view" : { "href" : "/commandes/'.$this->data.'" } , "addSandwich" : { "href" : "/commandes/'.$this->data.'/sandwich/_id" } } }';
+			$json = '{ "commande" : '.$this->data.' , "links" : { "view" : { "href" : "/commandes/'.$this->data.'" } } }';
 			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
 		}
 		$resp->getBody()->write($json);

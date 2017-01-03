@@ -84,8 +84,15 @@ class lbscontrol
 	
 	public function ajouterSandwich(Request $req, Response $resp, $args)
 	{
+		// Créer le sandwich de A à Z
+		// Les données sont envoyées en POST en JSON
+		
+		var_dump($_POST);
+		
+		//$dataSandwich = json_decode($_POST);
+		
+		/*
 		$token = filter_var($args['token'], FILTER_SANITIZE_STRING);
-		$id2 = filter_var($args['id2'], FILTER_SANITIZE_NUMBER_INT);
 		$json = "[]";
 		if(\lbs\model\commande::where('token', $token)->get()->toJson() != "[]")
 		{
@@ -98,19 +105,12 @@ class lbscontrol
 			
 			if(($etatCommande == 1) || ($etatCommande == 2))
 			{
-				if(\lbs\model\sandwich::where('id', $id2)->get()->toJson() != "[]")
-				{
-					$leSandwich = \lbs\model\sandwich::find($id2);
-					$leSandwich->id_commande = $id;
-					$leSandwich->save();
-					
-					return (new \lbs\view\lbsview($leSandwich))->render('ajouterSandwich', $req, $resp, $args);
-				}
-				else
-				{
-					$arr = array('error' => 'sandwich introuvable : '.$req->getUri());
-					return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
-				}
+				$leSandwich = new \lbs\model\sandwich();
+				
+				$leSandwich->id_commande = $token;
+				$leSandwich->save();
+				
+				return (new \lbs\view\lbsview($leSandwich))->render('ajouterSandwich', $req, $resp, $args);
 			}
 			else
 			{
@@ -122,7 +122,7 @@ class lbscontrol
 		{
 			$arr = array('error' => 'commande introuvable : '.$req->getUri());
 			return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
-		}
+		}*/
 	}
 	
 	public function supprimerSandwich(Request $req, Response $resp, $args)
