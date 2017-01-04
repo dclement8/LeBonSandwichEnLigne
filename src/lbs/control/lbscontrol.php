@@ -87,42 +87,42 @@ class lbscontrol
 		// Créer le sandwich de A à Z
 		// Les données sont envoyées en POST en JSON
 		
-		var_dump($_POST);
+		// Exemple :
+		// { "taillepain" : 1 , "typepain" : 1 , "ingredients" : [1, 3, 4, 9] }
 		
-		//$dataSandwich = json_decode($_POST);
+		$dataSandwich = json_decode($_POST["json"]);
 		
-		/*
-		$token = filter_var($args['token'], FILTER_SANITIZE_STRING);
-		$json = "[]";
-		if(\lbs\model\commande::where('token', $token)->get()->toJson() != "[]")
+		if((isset ($dataSandwich["taillepain"])) && (isset ($dataSandwich["typepain"])) && (isset ($dataSandwich["ingredients"])))
 		{
-			$commande = \lbs\model\commande::select('etat')->where('token', $token)-get();
-			$etatCommande = "";
-			foreach ($commande as $etat)
+			$sandwich = new \lbs\model\sandwich();
+			$sandwich->taillepain = filter_var($dataSandwich["taillepain"], FILTER_SANITIZE_NUMBER_INT);
+			$sandwich->typepain = filter_var($dataSandwich["typepain"], FILTER_SANITIZE_NUMBER_INT);
+			$sandwich->save();
+			$idSandwich = $sandwich->id;
+			
+			// Enregistrer les ingrédients
+			if(is_array($dataSandwich["ingredients"]))
 			{
-				$etatCommande = $etat->etat;
-			}
-
-			if(($etatCommande == 1) || ($etatCommande == 2))
-			{
-				$leSandwich = new \lbs\model\sandwich();
-				
-				$leSandwich->id_commande = $token;
-				$leSandwich->save();
-				
-				return (new \lbs\view\lbsview($leSandwich))->render('ajouterSandwich', $req, $resp, $args);
+				for($i = 0; $i < count($dataSandwich["ingredients"]); $i++)
+				{
+					if(\lbs\model\ingredient::where('id', filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT))->get()->toJson() != "[]")
+					{
+						$sandwich->ingredientsSandwich()->attach([$idSandwich , filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT)]);
+					}
+				}
+				return (new \lbs\view\lbsview($sandwich))->render('ajouterSandwich', $req, $resp, $args);
 			}
 			else
 			{
-				$arr = array('error' => 'impossible de modifier la commande : '.$req->getUri());
+				$arr = array('error' => 'la donnée ingrédient n\'est pas un tableau : '.$req->getUri());
 				return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 			}
 		}
 		else
 		{
-			$arr = array('error' => 'commande introuvable : '.$req->getUri());
+			$arr = array('error' => 'données manquantes : '.$req->getUri());
 			return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
-		}*/
+		}
 	}
 
 	public function dateCommande(Request $req, Response $resp, $args)

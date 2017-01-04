@@ -175,7 +175,7 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
-$app->post('/commandes/{token}/sandwich',
+$app->post('/sandwich',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->ajouterSandwich($req, $resp, $args);
