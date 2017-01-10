@@ -189,6 +189,18 @@ $app->post('/commande/{id}/{date}',
 	}
 )->setName('dateCommande');
 
+/**
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*/
 $app->delete('/sandwichs/{id}',
 	function (Request $req, Response $resp, $args)
 	{
@@ -196,6 +208,24 @@ $app->delete('/sandwichs/{id}',
 	}
 )->setName('supprimerSandwich');
 
+/**
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*/
+$app->get('/facture/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->getFacture($req, $resp, $args);
+	}
+)->setName('getFacture');
 $app->run();
 
 

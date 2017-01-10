@@ -166,13 +166,8 @@ class lbscontrol
 		} else {
 			return (new \lbs\view\lbsview("404"))->render('suppCommande', $req, $resp);
 		}
-	
-
-
-		
 	}
 	
-
 	public function supprimerSandwich(Request $req, Response $resp, $args)
 	{
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -210,5 +205,13 @@ class lbscontrol
 			return (new \lbs\view\lbsview($arr))->render('supprimerSandwich', $req, $resp, $args);
 		}
 	}
+
+	public function getFacture(Request $req, Response $resp, $args) 
+	{
+		
+
+
+	}
+
 }
 
