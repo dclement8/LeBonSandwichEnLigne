@@ -12,6 +12,6 @@ class sandwich extends \Illuminate\Database\Eloquent\Model
 	// contenir
 	public function ingredientsSandwich()
 	{
-		return $this->belongsToMany("\lbs\model\ingredient","contenir","id","id_ingredient");
+		return $this->belongsToMany("\lbs\model\ingredient","contenir","id_sandwich","id_ingredient");
 	}
 }
