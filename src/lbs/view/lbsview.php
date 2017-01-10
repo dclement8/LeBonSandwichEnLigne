@@ -105,6 +105,23 @@ class lbsview
 		$resp->getBody()->write($json);
 		return $resp;
     }
+
+	private function suppCommande($req, $resp)
+	{
+		$data = $this->data;
+		
+		if($data == "200") {
+			$resp = $resp->withStatus(200);
+			
+		} elseif($data == "403") {
+
+			$resp = $resp->withStatus(403);
+		} else {
+			$resp = $resp->withStatus(404);
+		}
+		print_r($data);
+		return $resp;
+	}
 	
 	public function render($selector, $req, $resp)
 	{
@@ -124,6 +141,9 @@ class lbsview
 				break;
 			case "categorieIngredient":
 				$this->resp = $this->categorieIngredient($req, $resp);
+				break;
+			case "suppCommande":
+				$this->resp = $this->suppCommande($req, $resp);
 				break;
 		}
 		

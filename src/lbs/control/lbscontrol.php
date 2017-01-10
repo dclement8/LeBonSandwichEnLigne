@@ -62,4 +62,28 @@ class lbscontrol
 		
 		return (new \lbs\view\lbsview($json))->render('creerCommande', $req, $resp);
     }
+
+	public function suppCommande(Request $req, Response $resp, $args)
+	{
+
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		if($req = \lbs\model\commande::where('id', $id)->get()->toJson() !="[]"){
+
+			foreach($req as $q) {
+				if($q->etat == 1) {
+					\lbs\model\commande::destroy($id);
+					return (new \lbs\view\lbsview("200"))->render('suppCommande', $req, $resp);
+				} else {
+					return (new \lbs\view\lbsview("403"))->render('suppCommande', $req, $resp);				
+				}
+			}
+		} else {
+			return (new \lbs\view\lbsview("404"))->render('suppCommande', $req, $resp);
+		}
+	
+
+
+		
+	}
+	
 }
