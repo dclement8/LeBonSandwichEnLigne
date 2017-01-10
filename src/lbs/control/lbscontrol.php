@@ -92,7 +92,7 @@ class lbscontrol
 		
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
 		$token = filter_var($args['token'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-		$dataSandwich = json_decode($_POST["json"]);
+		$dataSandwich = json_decode($_POST["json"], true);
 		
 		if(\lbs\model\commande::where('id', $id)->get()->toJson() != "[]")
 		{
