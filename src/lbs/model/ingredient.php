@@ -12,7 +12,7 @@ class ingredient extends \Illuminate\Database\Eloquent\Model
 	// contenir
 	public function sandwichsIngredient()
 	{
-		return $this->belongsToMany("\lbs\model\sandwich","contenir","id_ingredient","id");
+		return $this->belongsToMany("\lbs\model\sandwich","contenir","id_ingredient","id_sandwich");
 	}
 	
 	// catégorie de l'ingredient
