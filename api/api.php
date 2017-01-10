@@ -175,23 +175,6 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
-
-$app->get('/suppCommande/{id}',
-	function (Request $req, Response $resp, $args)
-	{
-		return (new lbs\control\lbscontrol($this))->suppCommande($req, $resp, $args);
-	}
-)->setName('suppCommande');
-
-$app->get('/facture/{id}',
-	function (Request $req, Response $resp, $args)
-	{
-		return (new lbs\control\lbscontrol($this))->getFacture($req, $resp, $args);
-	}
-)->setName('getFacture');
-
-$app->run();
-
 $app->post('/sandwichs',
 	function (Request $req, Response $resp, $args)
 	{
@@ -214,4 +197,5 @@ $app->delete('/sandwichs/{id}',
 )->setName('supprimerSandwich');
 
 $app->run();
+
 
