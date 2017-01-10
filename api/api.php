@@ -154,6 +154,7 @@ $app->get('/ingredients/{id}',
 	}
 )->setName('detailsIngredient');
 
+
 $app->get('/categories/{id}/ingredients',
 	function (Request $req, Response $resp, $args)
 	{
@@ -175,7 +176,7 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
-$app->post('/sandwichs',
+$app->post('/commandes/{id}/sandwichs?token={token}',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->ajouterSandwich($req, $resp, $args);
@@ -189,7 +190,7 @@ $app->post('/commande/{id}/{date}',
 	}
 )->setName('dateCommande');
 
-$app->delete('/sandwichs/{id}',
+$app->delete('/sandwichs/{id}?token={token}',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->supprimerSandwich($req, $resp, $args);
