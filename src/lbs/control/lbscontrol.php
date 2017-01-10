@@ -148,8 +148,7 @@ class lbscontrol
 			return (new \lbs\view\lbsview($json))->render('dateCommande', $req, $resp);
 		}
     }
-
-<<<<<<< HEAD
+ 
 	public function suppCommande(Request $req, Response $resp, $args)
 	{
 
@@ -173,8 +172,7 @@ class lbscontrol
 		
 	}
 	
-}
-=======
+
 	public function supprimerSandwich(Request $req, Response $resp, $args)
 	{
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -213,4 +211,4 @@ class lbscontrol
 		}
 	}
 }
->>>>>>> refs/remotes/origin/master
+

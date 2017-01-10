@@ -175,7 +175,7 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
-<<<<<<< HEAD
+
 $app->get('/suppCommande/{id}',
 	function (Request $req, Response $resp, $args)
 	{
@@ -191,7 +191,7 @@ $app->get('/facture/{id}',
 )->setName('getFacture');
 
 $app->run();
-=======
+
 $app->post('/sandwichs',
 	function (Request $req, Response $resp, $args)
 	{
@@ -214,4 +214,4 @@ $app->delete('/sandwichs/{id}',
 )->setName('supprimerSandwich');
 
 $app->run();
->>>>>>> refs/remotes/origin/master
+

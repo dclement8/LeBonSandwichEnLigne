@@ -105,7 +105,6 @@ class lbsview
 		return $resp;
     }
 
-<<<<<<< HEAD
 	private function suppCommande($req, $resp)
 	{
 		$data = $this->data;
@@ -123,8 +122,6 @@ class lbsview
 		return $resp;
 	}
 	
-	public function render($selector, $req, $resp)
-=======
 	private function creerCommande($req, $resp, $args)
 	{
 		if($this->data == null)
@@ -201,7 +198,7 @@ class lbsview
     }
 
 	public function render($selector, $req, $resp, $args)
->>>>>>> refs/remotes/origin/master
+
 	{
 		switch($selector)
 		{
@@ -240,3 +237,5 @@ class lbsview
 		return $this->resp;
 	}
 }
+
+
