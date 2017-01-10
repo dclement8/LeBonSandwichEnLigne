@@ -182,8 +182,16 @@ class lbsview
 
 	private function modifierSandwich($req, $resp, $args)
 	{
-		$json = "[]";
-		$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "sandwich" : '.$this->data->id.' , "links" : { "details" : { "href" : "/commandes/'.$args['token'].'" } , "delete" : { "href" : "/sandwichs/'.$this->data->id.'" } } }';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
 		$resp->getBody()->write($json);
 		return $resp;
     }

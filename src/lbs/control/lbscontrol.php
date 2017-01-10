@@ -86,12 +86,12 @@ class lbscontrol
 	{
 		// Créer le sandwich de A à Z
 		// Les données sont envoyées en POST en JSON
-		
+
 		// Exemple :
 		// { "taillepain" : 1 , "typepain" : 1 , "ingredients" : [1, 3, 4, 9] }
-		
+
 		$dataSandwich = json_decode($_POST["json"]);
-		
+
 		if((isset ($dataSandwich["taillepain"])) && (isset ($dataSandwich["typepain"])) && (isset ($dataSandwich["ingredients"])))
 		{
 			$sandwich = new \lbs\model\sandwich();
@@ -99,7 +99,7 @@ class lbscontrol
 			$sandwich->typepain = filter_var($dataSandwich["typepain"], FILTER_SANITIZE_NUMBER_INT);
 			$sandwich->save();
 			$idSandwich = $sandwich->id;
-			
+
 			// Enregistrer les ingrédients
 			if(is_array($dataSandwich["ingredients"]))
 			{
@@ -189,7 +189,87 @@ class lbscontrol
 
 	public function modifierSandwich(Request $req, Response $resp, $args)
 	{
-		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
-		$json = "[]";
+		// Modifie le sandwich
+		// Si l'état est à 1 (commande créée), on peut modifier le sandwich de A à Z (type pain + ingrédients + taille pain)
+		// Si l'état est à 2 (commande payée), on peut modifier le sandwich à coût constant (type pain + ingrédients)
+		// Sinon, modification impossible
+		// Les données sont envoyées en POST en JSON
+
+		// Exemple :
+		// { "taillepain" : 1 , "typepain" : 1 , "ingredients" : [1, 3, 4, 9] }
+
+		$idSandwich = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+
+		if(empty($_GET["token"])) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'empty token : '.$req->getUri()
+			)))->render('modifierSandwich', $req, $resp, $args);
+		}
+
+		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_NUMBER_INT);
+		if(empty($_POST["json"])) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'empty data : '.$req->getUri()
+			)))->render('modifierSandwich', $req, $resp, $args);
+		}
+		$dataSandwich = json_decode($_POST["json"], true);
+
+		$commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
+		if($commande === false) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'bad token : '.$req->getUri()
+			)))->render('modifierSandwich', $req, $resp, $args);
+		}
+
+		$sandwich = \lbs\model\sandwich::find($idSandwich);
+		if($sandwich === false) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'sandwich inexistant : '.$req->getUri()
+			)))->render('modifierSandwich', $req, $resp, $args);
+		}
+
+		if($sandwich->id_commande != $commande->id) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'mauvais id : '.$req->getUri()
+			)))->render('modifierSandwich', $req, $resp, $args);
+		}
+
+		if($commande->etat > 2) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'commande déjà traitée : '.$req->getUri()
+			)))->render('modifierSandwich', $req, $resp, $args);
+		}
+
+		if($commande->etat == 1 && isset($dataSandwich["taillepain"])) {
+			$taillepain = filter_var($dataSandwich["taillepain"], FILTER_SANITIZE_NUMBER_INT);
+			if($taillepain > 0 && $taillepain < 5)
+				$sandwich->taillepain = $taillepain;
+		}
+
+		if(isset ($dataSandwich["typepain"])) {
+			$typepain = filter_var($dataSandwich["typepain"], FILTER_SANITIZE_NUMBER_INT);
+			if($typepain > 0 && $typepain < 4)
+				$sandwich->typepain = $typepain;
+		}
+
+		// Supprime les anciens ingrédients
+		$sandwich->ingredientsSandwich()->detach($idSandwich);
+
+		$sandwich->save();
+
+		// Modifier les ingrédients (tous les ingrédients doivent être précisés)
+		if(is_array($dataSandwich["ingredients"])) {
+			for($i = 0; $i < count($dataSandwich["ingredients"]); $i++) {
+				if(\lbs\model\ingredient::where('id', filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT))->get()->toJson() != "[]")
+				{
+					$sandwich->ingredientsSandwich()->attach([$idSandwich , filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT)]);
+				}
+			}
+			return (new \lbs\view\lbsview($sandwich))->render('modifierSandwich', $req, $resp, $args);
+		}
+		else {
+			$arr = array('error' => 'la donnée ingrédient n\'est pas un tableau : '.$req->getUri());
+			return (new \lbs\view\lbsview($arr))->render('modifierSandwich', $req, $resp, $args);
+		}
 	}
 }
