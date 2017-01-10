@@ -91,7 +91,7 @@ class lbscontrol
 		// { "taillepain" : 1 , "typepain" : 1 , "ingredients" : [1, 3, 4, 9] }
 		
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
-		$token = filter_var($args['token'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		$dataSandwich = json_decode($_POST["json"], true);
 		
 		if(\lbs\model\commande::where('id', $id)->get()->toJson() != "[]")
@@ -146,7 +146,7 @@ class lbscontrol
 			else
 			{
 				$arr = array('error' => 'token exigé : '.$req->getUri());
-				$resp = $resp->withStatus(401);
+				$resp = $resp->withStatus(403);
 				return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 			}
 		}
@@ -185,7 +185,7 @@ class lbscontrol
 	public function supprimerSandwich(Request $req, Response $resp, $args)
 	{
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
-		$token = filter_var($args['token'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		$json = "[]";
 		
 		if(\lbs\model\sandwich::where('id', $id)->get()->toJson() != "[]")
@@ -232,7 +232,7 @@ class lbscontrol
 			else
 			{
 				$arr = array('error' => 'token exigé : '.$req->getUri());
-				$resp = $resp->withStatus(401);
+				$resp = $resp->withStatus(403);
 				return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 			}
 		}
