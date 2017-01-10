@@ -226,6 +226,25 @@ $app->get('/facture/{id}',
 		return (new lbs\control\lbscontrol($this))->getFacture($req, $resp, $args);
 	}
 )->setName('getFacture');
+
+/**
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*/
+$app->get('descriptionCommande/{id}',
+function(Request $req, Response $resp, $args)
+{
+	return(new lbs\lbscontrol\lbscontrol($this))->descriptionCommande($req, $resp, $args);
+})->setName('descriptionCommande');
+
 $app->run();
 
 
