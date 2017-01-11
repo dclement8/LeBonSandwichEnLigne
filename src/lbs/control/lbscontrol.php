@@ -59,22 +59,35 @@ class lbscontrol
 
 	public function creerCommande(Request $req, Response $resp, $args)
 	{
+		// Les données sont envoyées en POST en JSON
+		
+		// Exemple :
+		// { "dateretrait" : "01/01/2000" , "montant" : 10 }
+		
 		$obj = json_decode($_POST["json"]);
+		$dateRetrait = filter_var($obj->dateretrait, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 		$commande = new \lbs\model\commande();
 
 		if(isset($obj->dateretrait) && isset($obj->montant))
 		{
-			$commande->dateretrait = filter_var($obj->dateretrait, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-			$commande->etat = 1;
-			$commande->montant = filter_var($obj->montant, FILTER_SANITIZE_NUMBER_FLOAT);;
+			if((\DateTime::createFromFormat("Y-m-d", $dateRetrait)) === false)
+			{
+				return (new \lbs\view\lbsview(null))->render('creerCommande', $req, $resp, $args);
+			}
+			else
+			{
+				$commande->dateretrait = $dateRetrait;
+				$commande->etat = 1;
+				$commande->montant = filter_var($obj->montant, FILTER_SANITIZE_NUMBER_FLOAT);;
 
-			$factory = new \RandomLib\Factory;
-			$generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
-			$commande->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz0123456789');
+				$factory = new \RandomLib\Factory;
+				$generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
+				$commande->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz0123456789');
 
-			$commande->save();
-			return (new \lbs\view\lbsview($commande))->render('creerCommande', $req, $resp, $args);
+				$commande->save();
+				return (new \lbs\view\lbsview($commande))->render('creerCommande', $req, $resp, $args);
+			}
 		}
 		else
 		{
