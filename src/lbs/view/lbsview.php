@@ -13,6 +13,14 @@ class lbsview
         $this->data = $data;
     }
 
+	private function getStatus() {
+		if(array_key_exists('status', $this->data)) {
+			unset($this->data['status']);
+			return $this->data['status'];
+		}
+		return 400;
+	}
+
     private function detailsCategorie($req, $resp, $args)
 	{
 		$json = "";
@@ -130,7 +138,7 @@ class lbsview
 		}
 		else
 		{
-			$json = '{ "sandwich" : '.$this->data->id.' , "links" : { "details" : { "href" : "/commandes/'.$args['token'].'" } , "delete" : { "href" : "/sandwichs/'.$this->data->id.'" } } }';
+			$json = '{ "sandwich" : '.$this->data->id.' , "links" : { "details" : { "href" : "/commandes/'.$_GET['token'].'" } , "delete" : { "href" : "/sandwichs/'.$this->data->id.'" } } }';
 			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
 		}
 		$resp->getBody()->write($json);
@@ -139,20 +147,11 @@ class lbsview
 
 	private function dateCommande($req, $resp, $args)
 	{
-		$json = "";
-		if($this->data === false)
+		if(is_array($this->data))
 		{
-			$tab = array("error" => "bad request, incorrect date or the date has already passed : ".$req->getUri());
-			$json = json_encode($tab);
-			$resp = $resp->withStatus(400);
-			$resp = $resp->withHeader('Content-Type', 'application/json');
-		}
-		elseif($this->data == "[]")
-		{
-			$tab = array("error" => "ressource not found : ".$req->getUri());
-			$json = json_encode($tab);
-			$resp = $resp->withStatus(404);
-			$resp = $resp->withHeader('Content-Type', 'application/json');
+			$status = $this->getStatus();
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
 		}
 		else
 		{
@@ -168,8 +167,9 @@ class lbsview
 	{
 		if(is_array($this->data))
 		{
+			$status = $this->getStatus();
 			$json = json_encode($this->data);
-			$resp = $resp->withHeader('Content-Type', 'application/json');
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
 		}
 		else
 		{
@@ -228,7 +228,7 @@ class lbsview
 				$this->resp = $this->modifierSandwich($req, $resp, $args);
 				break;
 			case "dateCommande":
-				$this->resp = $this->dateCommande($req, $resp);
+				$this->resp = $this->dateCommande($req, $resp, $args);
 				break;
 		}
 
