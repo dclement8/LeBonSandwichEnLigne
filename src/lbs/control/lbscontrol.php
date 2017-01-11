@@ -132,9 +132,9 @@ class lbscontrol
 		$date = date_parse($args['date']);
 
 		$commande = \lbs\model\commande::find($id);
-		if($commande === false)
+		if($commande === false  || $commande === null)
 			return (new \lbs\view\lbsview('[]'))->render('dateCommande', $req, $resp);
-		if($date === false)
+		if($date === false  || $date === null)
 			return (new \lbs\view\lbsview(false))->render('dateCommande', $req, $resp);
 		if(!checkdate($date['month'], $date['day'], $date['year']))
 			return (new \lbs\view\lbsview(false))->render('dateCommande', $req, $resp);
@@ -215,14 +215,14 @@ class lbscontrol
 		$dataSandwich = json_decode($_POST["json"], true);
 
 		$commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
-		if($commande === false) {
+		if($commande === false || $commande === null) {
 			return (new \lbs\view\lbsview(array(
 				'error' => 'bad token : '.$req->getUri()
 			)))->render('modifierSandwich', $req, $resp, $args);
 		}
 
 		$sandwich = \lbs\model\sandwich::find($idSandwich);
-		if($sandwich === false) {
+		if($sandwich === false || $sandwich === null) {
 			return (new \lbs\view\lbsview(array(
 				'error' => 'sandwich inexistant : '.$req->getUri()
 			)))->render('modifierSandwich', $req, $resp, $args);
@@ -252,8 +252,8 @@ class lbscontrol
 				$sandwich->typepain = $typepain;
 		}
 
-		// Supprime les anciens ingrédients
-		$sandwich->ingredientsSandwich()->detach($idSandwich);
+		// Supprime les anciens ingrédients de la table pivot
+		$sandwich->ingredientsSandwich()->detach();
 
 		$sandwich->save();
 
@@ -262,7 +262,7 @@ class lbscontrol
 			for($i = 0; $i < count($dataSandwich["ingredients"]); $i++) {
 				if(\lbs\model\ingredient::where('id', filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT))->get()->toJson() != "[]")
 				{
-					$sandwich->ingredientsSandwich()->attach([$idSandwich , filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT)]);
+					$sandwich->ingredientsSandwich()->attach(filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT));
 				}
 			}
 			return (new \lbs\view\lbsview($sandwich))->render('modifierSandwich', $req, $resp, $args);
