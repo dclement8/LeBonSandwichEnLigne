@@ -59,22 +59,35 @@ class lbscontrol
 
 	public function creerCommande(Request $req, Response $resp, $args)
 	{
+		// Les données sont envoyées en POST en JSON
+
+		// Exemple :
+		// { "dateretrait" : "01/01/2000" , "montant" : 10 }
+
 		$obj = json_decode($_POST["json"]);
+		$dateRetrait = filter_var($obj->dateretrait, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 		$commande = new \lbs\model\commande();
 
 		if(isset($obj->dateretrait) && isset($obj->montant))
 		{
-			$commande->dateretrait = filter_var($obj->dateretrait, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-			$commande->etat = 1;
-			$commande->montant = filter_var($obj->montant, FILTER_SANITIZE_NUMBER_FLOAT);;
+			if((\DateTime::createFromFormat("Y-m-d", $dateRetrait)) === false)
+			{
+				return (new \lbs\view\lbsview(null))->render('creerCommande', $req, $resp, $args);
+			}
+			else
+			{
+				$commande->dateretrait = $dateRetrait;
+				$commande->etat = 1;
+				$commande->montant = filter_var($obj->montant, FILTER_SANITIZE_NUMBER_FLOAT);;
 
-			$factory = new \RandomLib\Factory;
-			$generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
-			$commande->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz0123456789');
+				$factory = new \RandomLib\Factory;
+				$generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
+				$commande->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz0123456789');
 
-			$commande->save();
-			return (new \lbs\view\lbsview($commande->token))->render('creerCommande', $req, $resp, $args);
+				$commande->save();
+				return (new \lbs\view\lbsview($commande))->render('creerCommande', $req, $resp, $args);
+			}
 		}
 		else
 		{
@@ -90,37 +103,70 @@ class lbscontrol
 		// Exemple :
 		// { "taillepain" : 1 , "typepain" : 1 , "ingredients" : [1, 3, 4, 9] }
 
-		$dataSandwich = json_decode($_POST["json"]);
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$dataSandwich = json_decode($_POST["json"], true);
 
-		if((isset ($dataSandwich["taillepain"])) && (isset ($dataSandwich["typepain"])) && (isset ($dataSandwich["ingredients"])))
+		if(\lbs\model\commande::where('id', $id)->get()->toJson() != "[]")
 		{
-			$sandwich = new \lbs\model\sandwich();
-			$sandwich->taillepain = filter_var($dataSandwich["taillepain"], FILTER_SANITIZE_NUMBER_INT);
-			$sandwich->typepain = filter_var($dataSandwich["typepain"], FILTER_SANITIZE_NUMBER_INT);
-			$sandwich->save();
-			$idSandwich = $sandwich->id;
-
-			// Enregistrer les ingrédients
-			if(is_array($dataSandwich["ingredients"]))
+			if(isset($_GET["token"]))
 			{
-				for($i = 0; $i < count($dataSandwich["ingredients"]); $i++)
+				$commande = \lbs\model\commande::where('id', $id)->get();
+				if($commande->token == $token)
 				{
-					if(\lbs\model\ingredient::where('id', filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT))->get()->toJson() != "[]")
+					if((isset ($dataSandwich["taillepain"])) && (isset ($dataSandwich["typepain"])) && (isset ($dataSandwich["ingredients"])))
 					{
-						$sandwich->ingredientsSandwich()->attach([$idSandwich , filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT)]);
+						$sandwich = new \lbs\model\sandwich();
+						$sandwich->taillepain = filter_var($dataSandwich["taillepain"], FILTER_SANITIZE_NUMBER_INT);
+						$sandwich->typepain = filter_var($dataSandwich["typepain"], FILTER_SANITIZE_NUMBER_INT);
+						$sandwich->id_commande = $id;
+						$sandwich->save();
+						$idSandwich = $sandwich->id;
+
+						// Enregistrer les ingrédients
+						if(is_array($dataSandwich["ingredients"]))
+						{
+							for($i = 0; $i < count($dataSandwich["ingredients"]); $i++)
+							{
+								if(\lbs\model\ingredient::where('id', filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT))->get()->toJson() != "[]")
+								{
+									$sandwich->ingredientsSandwich()->attach([$idSandwich , filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT)]);
+								}
+							}
+							return (new \lbs\view\lbsview($sandwich))->render('ajouterSandwich', $req, $resp, $args);
+						}
+						else
+						{
+							$arr = array('error' => 'la donnée ingrédient n\'est pas un tableau : '.$req->getUri());
+							$resp = $resp->withStatus(400);
+							return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
+						}
+					}
+					else
+					{
+						$arr = array('error' => 'données manquantes : '.$req->getUri());
+						$resp = $resp->withStatus(400);
+						return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 					}
 				}
-				return (new \lbs\view\lbsview($sandwich))->render('ajouterSandwich', $req, $resp, $args);
+				else
+				{
+					$arr = array('error' => 'mauvais token : '.$req->getUri());
+					$resp = $resp->withStatus(403);
+					return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
+				}
 			}
 			else
 			{
-				$arr = array('error' => 'la donnée ingrédient n\'est pas un tableau : '.$req->getUri());
+				$arr = array('error' => 'token exigé : '.$req->getUri());
+				$resp = $resp->withStatus(403);
 				return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 			}
 		}
 		else
 		{
-			$arr = array('error' => 'données manquantes : '.$req->getUri());
+			$arr = array('error' => 'commande innexistante : '.$req->getUri());
+			$resp = $resp->withStatus(404);
 			return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 		}
 	}
@@ -152,38 +198,62 @@ class lbscontrol
 	public function supprimerSandwich(Request $req, Response $resp, $args)
 	{
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		$json = "[]";
+
 		if(\lbs\model\sandwich::where('id', $id)->get()->toJson() != "[]")
 		{
-			$reqCommande = \lbs\model\sandwich::select('id_commande')->where('id', $id)-get();
-			$idCommande = "";
-			foreach ($reqCommande as $idCom)
+			$leSandwich = \lbs\model\sandwich::where('id', $id)->get();
+			if(isset($_GET["token"]))
 			{
-				$idCommande = $idCom->id_commande;
-			}
+				$commande = \lbs\model\commande::where('id', $leSandwich->id_commande)->get();
+				if($commande->token == $token)
+				{
+					$reqCommande = \lbs\model\sandwich::select('id_commande')->where('id', $id)-get();
+					$idCommande = "";
+					foreach ($reqCommande as $idCom)
+					{
+						$idCommande = $idCom->id_commande;
+					}
 
-			$commande = \lbs\model\commande::select('etat')->where('id', $idCommande)-get();
-			$etatCommande = "";
-			foreach ($commande as $etat)
-			{
-				$etatCommande = $etat->etat;
-			}
+					$commande = \lbs\model\commande::select('etat')->where('id', $idCommande)-get();
+					$etatCommande = "";
+					foreach ($commande as $etat)
+					{
+						$etatCommande = $etat->etat;
+					}
 
-			if(($etatCommande == 1) || ($etatCommande == 2))
-			{
-				\lbs\model\sandwich::destroy($id);
-				return (new \lbs\view\lbsview($idCommande))->render('supprimerSandwich', $req, $resp, $args);
+					if(($etatCommande == 1) || ($etatCommande == 2))
+					{
+						\lbs\model\sandwich::destroy($id);
+						return (new \lbs\view\lbsview($idCommande))->render('supprimerSandwich', $req, $resp, $args);
+					}
+					else
+					{
+						$arr = array('error' => 'impossible de modifier la commande : '.$req->getUri());
+						$resp = $resp->withStatus(403);
+						return (new \lbs\view\lbsview($arr))->render('supprimerSandwich', $req, $resp, $args);
+					}
+				}
+				else
+				{
+					$arr = array('error' => 'mauvais token : '.$req->getUri());
+					$resp = $resp->withStatus(403);
+					return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
+				}
 			}
 			else
 			{
-				$arr = array('error' => 'impossible de modifier la commande : '.$req->getUri());
-				return (new \lbs\view\lbsview($arr))->render('supprimerSandwich', $req, $resp, $args);
+				$arr = array('error' => 'token exigé : '.$req->getUri());
+				$resp = $resp->withStatus(403);
+				return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 			}
 		}
 		else
 		{
-			$arr = array('error' => 'sandwich introuvable : '.$req->getUri());
-			return (new \lbs\view\lbsview($arr))->render('supprimerSandwich', $req, $resp, $args);
+			$arr = array('error' => 'sandwich innexistant : '.$req->getUri());
+			$resp = $resp->withStatus(404);
+			return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 		}
 	}
 

@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-*.ini
-~$tableau-stories-LBS-LP1.ods
-=======
 ~$tableau-stories-LBS-LP1.ods
 *.ini
 conf/config.ini
->>>>>>> origin/master

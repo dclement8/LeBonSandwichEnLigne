@@ -107,14 +107,14 @@ class lbsview
 
 	private function creerCommande($req, $resp, $args)
 	{
-		if($this->data == null)
+		if($this->data != null)
 		{
-			$json = '{ "token" : "'.$this->data.'" , "links" : { "view" : { "href" : "/commandes/'.$this->data.'" } } }';
+			$json = '{ "commande" : { "token" : "'.$this->data->token.'" , "id" : '.$this->data->id.' } , "links" : { "view" : { "href" : "/commandes/'.$this->data->id.'" } } }';
 			$resp = $resp->withStatus(201)->withHeader('Content-Type', 'application/json');
 		}
 		else
 		{
-			$json = '{ "error" : "données manquantes pour la création de la commande : "'.$req->getUri().'" }';
+			$json = '{ "error" : "données manquantes ou incorrectes pour la création de la commande : '.$req->getUri().'" }';
 			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
 		}
 		$resp->getBody()->write($json);
@@ -126,7 +126,7 @@ class lbsview
 		if(is_array($this->data))
 		{
 			$json = json_encode($this->data);
-			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+			$resp = $resp->withHeader('Content-Type', 'application/json');
 		}
 		else
 		{
@@ -169,7 +169,7 @@ class lbsview
 		if(is_array($this->data))
 		{
 			$json = json_encode($this->data);
-			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+			$resp = $resp->withHeader('Content-Type', 'application/json');
 		}
 		else
 		{

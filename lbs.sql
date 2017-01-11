@@ -2,8 +2,8 @@
 -- version 4.5.4.1
 -- http://www.phpmyadmin.net
 --
--- Client :  localhost
--- Généré le :  Mar 03 Janvier 2017 à 18:09
+-- Client :  127.0.0.1
+-- Généré le :  Mar 10 Janvier 2017 à 15:44
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.18
 
@@ -53,7 +53,9 @@ CREATE TABLE `commande` (
   `id` int(11) NOT NULL,
   `montant` float NOT NULL,
   `dateretrait` date DEFAULT NULL,
-  `etat` int(11) DEFAULT NULL
+  `etat` int(11) DEFAULT NULL,
+  `token` varchar(500) DEFAULT NULL,
+  `montant` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -137,7 +139,8 @@ ALTER TABLE `categorie`
 -- Index pour la table `commande`
 --
 ALTER TABLE `commande`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token` (`token`);
 
 --
 -- Index pour la table `contenir`
