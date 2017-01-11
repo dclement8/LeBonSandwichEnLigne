@@ -324,4 +324,11 @@ $app->delete('/sandwichs/{id}',
 	}
 )->setName('supprimerSandwich');
 
+$app->post('/sandwichs/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->modifierSandwich($req, $resp, $args);
+	}
+)->setName('modifierSandwich');
+
 $app->run();

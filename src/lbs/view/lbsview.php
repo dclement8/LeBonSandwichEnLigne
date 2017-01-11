@@ -180,6 +180,22 @@ class lbsview
 		return $resp;
     }
 
+	private function modifierSandwich($req, $resp, $args)
+	{
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "sandwich" : '.$this->data->id.' , "links" : { "details" : { "href" : "/commandes/'.$_GET['token'].'" } , "delete" : { "href" : "/sandwichs/'.$this->data->id.'" } } }';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+    }
+
 	public function render($selector, $req, $resp, $args)
 	{
 		switch($selector)
@@ -207,6 +223,9 @@ class lbsview
 				break;
 			case "supprimerSandwich":
 				$this->resp = $this->supprimerSandwich($req, $resp, $args);
+				break;
+			case "modifierSandwich":
+				$this->resp = $this->modifierSandwich($req, $resp, $args);
 				break;
 			case "dateCommande":
 				$this->resp = $this->dateCommande($req, $resp);
