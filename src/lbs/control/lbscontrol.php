@@ -360,4 +360,114 @@ class lbscontrol
 			return (new \lbs\view\lbsview($arr))->render('modifierSandwich', $req, $resp, $args);
 		}
 	}
+
+    public function payerCommande(Request $req, Response $resp, $args)
+	{
+		// Paye une commande
+		// L'état doit être à 1 (commande créée)
+		// Les données sont envoyées en POST en JSON
+
+		// Exemple :
+		// { "typecarte" : "mastercard" , "numero" : "5442 3811 6727 0320" , "expire" : "3/2020", "code" : "157" }
+
+        function verifExpire($expire) {
+            $expire = explode("/", $expire);
+            if(count($expire) != 2)
+                return false;
+            if(!is_numeric($expire['0']) || !is_numeric($expire['1']))
+                return false;
+            if((int)$expire['1'] < date('y'))
+                return false;
+            elseif((int)$expire['1'] > date('y'))
+                return true;
+            if((int)$expire['0'] < date('n'))
+                return false;
+            return true;
+        }
+
+        function verifCode($code) {
+            if(!is_numeric($code))
+                return false;
+            if((int)$code >= 0 && (int)$code <= 999)
+                return true;
+            return false;
+        }
+
+		$idCommande = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+
+		if(empty($_GET["token"])) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'token exigé : '.$req->getUri()
+			)))->render('payerCommande', $req, $resp, $args);
+		}
+
+		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_NUMBER_INT);
+		if(empty($_POST["json"])) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'pas de données : '.$req->getUri()
+			)))->render('payerCommande', $req, $resp, $args);
+		}
+		$dataCommande = json_decode($_POST["json"], true);
+
+		$commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
+		if($commande === false || $commande === null) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'mauvais token : '.$req->getUri()
+			)))->render('payerCommande', $req, $resp, $args);
+		}
+
+		if($idCommande != $commande->id) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'mauvais id : '.$req->getUri()
+			)))->render('payerCommande', $req, $resp, $args);
+		}
+
+		if($commande->etat != 1) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'commande déjà traitée : '.$req->getUri()
+			)))->render('payerCommande', $req, $resp, $args);
+		}
+
+        /* Pas de vérification des données bancaires ici, juste sur la syntaxe */
+        if(isset($dataCommande['typecarte']) && isset($dataCommande['numero']) && isset($dataCommande['expire']) && isset($dataCommande['code'])) {
+            // Toutes les données sont bien transmises
+            if($dataCommande['typecarte'] != 'visa' && $dataCommande['typecarte'] != 'mastercard') {
+                return (new \lbs\view\lbsview(array(
+    				'error' => 'type de carte non supporté : '.$req->getUri()
+    			)))->render('payerCommande', $req, $resp, $args);
+            }
+
+            if(
+                ($dataCommande['typecarte'] == 'visa' && !preg_match("^4[0-9]{12}(?:[0-9]{3})?$", $dataCommande['typecarte']))
+                &&
+                ($dataCommande['typecarte'] == 'mastercard' && !preg_match("^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$", $dataCommande['typecarte']))
+            ) {
+                return (new \lbs\view\lbsview(array(
+    				'error' => 'numéro de carte incorrect : '.$req->getUri()
+    			)))->render('payerCommande', $req, $resp, $args);
+            }
+
+            if(!verifExpire($dataCommande['expire'])) {
+                return (new \lbs\view\lbsview(array(
+    				'error' => 'carte expirée : '.$req->getUri()
+    			)))->render('payerCommande', $req, $resp, $args);
+            }
+
+            if(!verifCode($dataCommande['code'])) {
+                return (new \lbs\view\lbsview(array(
+    				'error' => 'code incorrect : '.$req->getUri()
+    			)))->render('payerCommande', $req, $resp, $args);
+            }
+
+            $commande->etat = 2;
+            $commande->save();
+
+            return (new \lbs\view\lbsview($commande))->render('payerCommande', $req, $resp, $args);
+        }
+        else {
+            return (new \lbs\view\lbsview(array(
+				'error' => 'données bancaires incomplètes : '.$req->getUri()
+			)))->render('payerCommande', $req, $resp, $args);
+        }
+	}
 }
