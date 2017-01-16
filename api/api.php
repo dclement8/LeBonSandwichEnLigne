@@ -317,6 +317,13 @@ $app->post('/commande/{id}/{date}',
 	}
 )->setName('dateCommande');
 
+$app->post('/commandes/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->payerCommande($req, $resp, $args);
+	}
+)->setName('payerCommande');
+
 $app->delete('/sandwichs/{id}',
 	function (Request $req, Response $resp, $args)
 	{

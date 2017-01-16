@@ -196,6 +196,23 @@ class lbsview
 		return $resp;
     }
 
+	private function payerCommande($req, $resp, $args)
+	{
+		if(is_array($this->data))
+		{
+			$status = $this->getStatus();
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "commande" : '.$this->data.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+    }
+
 	public function render($selector, $req, $resp, $args)
 	{
 		switch($selector)
@@ -229,6 +246,9 @@ class lbsview
 				break;
 			case "dateCommande":
 				$this->resp = $this->dateCommande($req, $resp, $args);
+				break;
+			case "payerCommande":
+				$this->resp = $this->payerCommande($req, $resp, $args);
 				break;
 		}
 
