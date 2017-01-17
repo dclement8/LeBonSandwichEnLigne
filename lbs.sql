@@ -51,7 +51,6 @@ INSERT INTO `categorie` (`id`, `nom`, `description`) VALUES
 
 CREATE TABLE `commande` (
   `id` int(11) NOT NULL,
-  `montant` float NOT NULL,
   `dateretrait` date DEFAULT NULL,
   `etat` int(11) DEFAULT NULL,
   `token` varchar(500) DEFAULT NULL,
@@ -115,15 +114,39 @@ INSERT INTO `ingredient` (`id`, `nom`, `cat_id`, `description`, `fournisseur`, `
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `taille`
+--
+
+CREATE TABLE IF NOT EXISTS `taille` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) NOT NULL,
+  `description` varchar(500) NOT NULL,
+  `prix` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `taille`
+--
+
+INSERT INTO `taille` (`id`, `nom`, `description`, `prix`) VALUES
+(1, 'Petite Faim', 'Petite Faim', '1.00'),
+(2, 'Moyenne Faim', 'Moyenne Faim', '1.50'),
+(3, 'Grosse Faim', 'Grosse Faim', '2.00'),
+(4, 'Ogre', 'Ogre', '3.00');
+
+
+--
 -- Structure de la table `sandwich`
 --
 
 CREATE TABLE `sandwich` (
   `id` int(11) NOT NULL,
-  `taillepain` int(11) DEFAULT NULL,
+  `taillepain` int(11) NOT NULL,
   `typepain` int(11) DEFAULT NULL,
   `id_commande` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 --
 -- Index pour les tables exportées
@@ -163,7 +186,8 @@ ALTER TABLE `ingredient`
 --
 ALTER TABLE `sandwich`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_sandwich_id_commande` (`id_commande`);
+  ADD KEY `FK_sandwich_id_commande` (`id_commande`),
+  ADD KEY `FK_sandwich_taillepain` (`taillepain`);
 
 --
 -- AUTO_INCREMENT pour les tables exportées
@@ -190,6 +214,14 @@ ALTER TABLE `ingredient`
 ALTER TABLE `sandwich`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT pour la table `taille`
+--
+ALTER TABLE `taille`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  
+  
+  
+--
 -- Contraintes pour les tables exportées
 --
 
@@ -210,7 +242,8 @@ ALTER TABLE `ingredient`
 -- Contraintes pour la table `sandwich`
 --
 ALTER TABLE `sandwich`
-  ADD CONSTRAINT `FK_sandwich_id_commande` FOREIGN KEY (`id_commande`) REFERENCES `commande` (`id`);
+  ADD CONSTRAINT `FK_sandwich_id_commande` FOREIGN KEY (`id_commande`) REFERENCES `commande` (`id`),
+  ADD CONSTRAINT `FK_sandwich_taillepain` FOREIGN KEY (`taillepain`) REFERENCES `taille` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
