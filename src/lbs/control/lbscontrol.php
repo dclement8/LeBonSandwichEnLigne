@@ -394,13 +394,20 @@ class lbscontrol
 
 		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_NUMBER_INT);
 
-        $commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
-		if($commande === false || $commande === null) {
+        $commande = \lbs\model\commande::find($idCommande);
+        if($commande === false  || $commande === null) {
 			return (new \lbs\view\lbsview(array(
+				'error' => 'Ressource non trouvée : '.$req->getUri(),
+				'status' => 404
+			)))->render('etatCommande', $req, $resp, $args);
+		}
+
+        if($commande->token != $commandeToken) {
+            return (new \lbs\view\lbsview(array(
 				'error' => 'mauvais token : '.$req->getUri(),
                 'status' => 403
 			)))->render('etatCommande', $req, $resp, $args);
-		}
+        }
 
         $json = $commande->toJson();
         return (new \lbs\view\lbsview($json))->render('etatCommande', $req, $resp, $args);
@@ -455,17 +462,18 @@ class lbscontrol
 		}
 		$dataCommande = json_decode($_POST["json"], true);
 
-		$commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
+        $commande = \lbs\model\commande::find($idCommande);
 		if($commande === false || $commande === null) {
-			return (new \lbs\view\lbsview(array(
-				'error' => 'mauvais token : '.$req->getUri(),
-                'status' => 403
-			)))->render('payerCommande', $req, $resp, $args);
+            return (new \lbs\view\lbsview(array(
+                'error' => 'Ressource non trouvée : '.$req->getUri(),
+                'status' => 404
+            )))->render('payerCommande', $req, $resp, $args);
 		}
 
-		if($idCommande != $commande->id) {
-			return (new \lbs\view\lbsview(array(
-				'error' => 'mauvais id : '.$req->getUri()
+		if($commandeToken != $commande->token) {
+            return (new \lbs\view\lbsview(array(
+				'error' => 'mauvais token : '.$req->getUri(),
+                'status' => 403
 			)))->render('payerCommande', $req, $resp, $args);
 		}
 

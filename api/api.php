@@ -310,6 +310,64 @@ $app->post('/commandes/{id}/sandwichs',
 	}
 )->setName('ajouterSandwich');
 
+/**
+ * @apiGroup Commandes
+ * @apiName dateCommande
+ * @apiVersion 0.1.0
+ *
+ * @api {post} /commandes/id/date  modifie la date de retrait d'une commande
+ *
+ * @apiDescription La modification est possible uniquement si la date est ultérieure à aujourd'hui. Retourne une représentation json de la commande.
+ *
+ * @apiParam {Number} id Identifiant de la commande
+ * @apiParam {Date} date Date de retrait (dans un format accepté par la fonction strtotime(), par exemple aaaa-mm-dd)
+ *
+ * @apiSuccess (Succès : 200) {Number} id Identifiant de la commande
+ * @apiSuccess (Succès : 200) {Date} dateretrait Date de retrait
+ * @apiSuccess (Succès : 200) {Number} etat Etat de la commande
+ * @apiSuccess (Succès : 200) {String} token Token de la commande
+ * @apiSuccess (Succès : 200) {Number} montant Montant de la commande
+ *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+ *     HTTP/1.1 200 OK
+ *
+ *	{
+ * 		"commande": {
+ *    		"id": 1,
+ *    		"dateretrait": "2017-12-12",
+ *    		"etat": 1,
+ *    		"token": "174086",
+ *    		"montant": 0
+ *  	}
+ *	}
+ *
+ * @apiError (Erreur : 404) error Commande inexistante
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 404 Not Found
+ *
+ *     {
+ *       "error" : "ressource not found"
+ *     }
+ *
+ * @apiError (Erreur : 401) error Token exigé
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 401 Unauthorized
+ *
+ *     {
+ *       "error" : "token exigé"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Mauvais token
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden
+ *
+ *     {
+ *       "error" : "mauvais token"
+ *     }
+ */
 $app->post('/commandes/{id}/{date}',
 	function (Request $req, Response $resp, $args)
 	{
