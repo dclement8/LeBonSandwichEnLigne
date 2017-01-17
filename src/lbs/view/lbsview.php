@@ -15,8 +15,11 @@ class lbsview
 
 	private function getStatus() {
 		if(array_key_exists('status', $this->data)) {
-			unset($this->data['status']);
-			return $this->data['status'];
+			if(is_numeric($this->data['status'])) {
+				$status = $this->data['status'];
+				unset($this->data['status']);
+				return $status;
+			}
 		}
 		return 400;
 	}

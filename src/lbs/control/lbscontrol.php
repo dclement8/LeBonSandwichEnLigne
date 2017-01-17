@@ -182,6 +182,13 @@ class lbscontrol
         }
 
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+
+        if(empty($_GET["token"])) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'token exigé : '.$req->getUri(),
+                'status' => 401
+			)))->render('dateCommande', $req, $resp, $args);
+		}
 		$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 		// Date dans un format accepté par la fonction strtotime(), par exemple aaaa-mm-dd
@@ -194,6 +201,13 @@ class lbscontrol
 				'status' => 404
 			)))->render('dateCommande', $req, $resp, $args);
 		}
+
+        if($commande->token != $token) {
+            return (new \lbs\view\lbsview(array(
+				'error' => 'mauvais token : '.$req->getUri(),
+                'status' => 403
+			)))->render('dateCommande', $req, $resp, $args);
+        }
 
 		if(!verifierDate($date)) {
 			return (new \lbs\view\lbsview(array(
