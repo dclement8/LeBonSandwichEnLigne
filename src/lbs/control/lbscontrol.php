@@ -173,6 +173,14 @@ class lbscontrol
 
 	public function dateCommande(Request $req, Response $resp, $args)
 	{
+        function verifierDate($date) {
+            if($date === false || $date === null)
+                return false;
+            if(!checkdate($date['month'], $date['day'], $date['year']))
+                return false;
+            return true;
+        }
+
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
 		$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -187,13 +195,7 @@ class lbscontrol
 			)))->render('dateCommande', $req, $resp, $args);
 		}
 
-		if($date === false  || $date === null) {
-			return (new \lbs\view\lbsview(array(
-				'error' => 'Date incorrecte : '.$req->getUri()
-			)))->render('dateCommande', $req, $resp, $args);
-		}
-
-		if(!checkdate($date['month'], $date['day'], $date['year'])) {
+		if(!verifierDate($date)) {
 			return (new \lbs\view\lbsview(array(
 				'error' => 'Date incorrecte : '.$req->getUri()
 			)))->render('dateCommande', $req, $resp, $args);
@@ -290,7 +292,8 @@ class lbscontrol
 
 		if(empty($_GET["token"])) {
 			return (new \lbs\view\lbsview(array(
-				'error' => 'token exigé : '.$req->getUri()
+				'error' => 'token exigé : '.$req->getUri(),
+                'status' => 401
 			)))->render('modifierSandwich', $req, $resp, $args);
 		}
 
@@ -305,14 +308,16 @@ class lbscontrol
 		$commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
 		if($commande === false || $commande === null) {
 			return (new \lbs\view\lbsview(array(
-				'error' => 'mauvais token : '.$req->getUri()
+				'error' => 'mauvais token : '.$req->getUri(),
+                'status' => 403
 			)))->render('modifierSandwich', $req, $resp, $args);
 		}
 
 		$sandwich = \lbs\model\sandwich::find($idSandwich);
 		if($sandwich === false || $sandwich === null) {
 			return (new \lbs\view\lbsview(array(
-				'error' => 'sandwich inexistant : '.$req->getUri()
+				'error' => 'sandwich inexistant : '.$req->getUri(),
+                'status' => 404
 			)))->render('modifierSandwich', $req, $resp, $args);
 		}
 
@@ -361,6 +366,32 @@ class lbscontrol
 		}
 	}
 
+    public function etatCommande(Request $req, Response $resp, $args) {
+        // Obtenir l'état d'une commande : date, montant, état d'avancement – paiement
+
+        $idCommande = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+
+		if(empty($_GET["token"])) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'token exigé : '.$req->getUri(),
+                'status' => 401
+			)))->render('etatCommande', $req, $resp, $args);
+		}
+
+		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_NUMBER_INT);
+
+        $commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
+		if($commande === false || $commande === null) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'mauvais token : '.$req->getUri(),
+                'status' => 403
+			)))->render('etatCommande', $req, $resp, $args);
+		}
+
+        $json = $commande->toJson();
+        return (new \lbs\view\lbsview($json))->render('etatCommande', $req, $resp, $args);
+    }
+
     public function payerCommande(Request $req, Response $resp, $args)
 	{
 		// Paye une commande
@@ -397,7 +428,8 @@ class lbscontrol
 
 		if(empty($_GET["token"])) {
 			return (new \lbs\view\lbsview(array(
-				'error' => 'token exigé : '.$req->getUri()
+				'error' => 'token exigé : '.$req->getUri(),
+                'status' => 401
 			)))->render('payerCommande', $req, $resp, $args);
 		}
 
@@ -412,7 +444,8 @@ class lbscontrol
 		$commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
 		if($commande === false || $commande === null) {
 			return (new \lbs\view\lbsview(array(
-				'error' => 'mauvais token : '.$req->getUri()
+				'error' => 'mauvais token : '.$req->getUri(),
+                'status' => 403
 			)))->render('payerCommande', $req, $resp, $args);
 		}
 
