@@ -20,4 +20,10 @@ class sandwich extends \Illuminate\Database\Eloquent\Model
 	{
 		return $this->belongsTo('\lbs\model\commande', "id_commande");
 	}
+	
+	// sandwich vers taille
+	public function taille()
+	{
+		return $this->belongsTo('\lbs\model\taille', "taillepain");
+	}
 }
