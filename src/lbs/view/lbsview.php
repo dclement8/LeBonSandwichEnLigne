@@ -15,8 +15,11 @@ class lbsview
 
 	private function getStatus() {
 		if(array_key_exists('status', $this->data)) {
-			unset($this->data['status']);
-			return $this->data['status'];
+			if(is_numeric($this->data['status'])) {
+				$status = $this->data['status'];
+				unset($this->data['status']);
+				return $status;
+			}
 		}
 		return 400;
 	}
@@ -213,6 +216,23 @@ class lbsview
 		return $resp;
     }
 
+	private function etatCommande($req, $resp, $args)
+	{
+		if(is_array($this->data))
+		{
+			$status = $this->getStatus();
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "commande" : '.$this->data.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+    }
+
 	public function render($selector, $req, $resp, $args)
 	{
 		switch($selector)
@@ -249,6 +269,9 @@ class lbsview
 				break;
 			case "payerCommande":
 				$this->resp = $this->payerCommande($req, $resp, $args);
+				break;
+			case "etatCommande":
+				$this->resp = $this->etatCommande($req, $resp, $args);
 				break;
 		}
 

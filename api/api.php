@@ -1,10 +1,8 @@
 <?php
 // Autoloaders
 require_once("../vendor/autoload.php");
-
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-
 $configuration = [
 	'settings' => [
 		'displayErrorDetails' => true ]
@@ -303,6 +301,85 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
+$app->post('/commandes/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->payerCommande($req, $resp, $args);
+	}
+)->setName('payerCommande');
+
+/**
+ * @apiGroup Commandes
+ * @apiName dateCommande
+ * @apiVersion 0.1.0
+ *
+ * @api {post} /commandes/id/date  modifie la date de retrait d'une commande
+ *
+ * @apiDescription La modification est possible uniquement si la date est ultérieure à aujourd'hui. Retourne une représentation json de la commande.
+ *
+ * @apiParam {Number} id Identifiant de la commande
+ * @apiParam {Date} date Date de retrait (dans un format accepté par la fonction strtotime(), par exemple aaaa-mm-dd)
+ *
+ * @apiSuccess (Succès : 200) {Number} id Identifiant de la commande
+ * @apiSuccess (Succès : 200) {Date} dateretrait Date de retrait
+ * @apiSuccess (Succès : 200) {Number} etat Etat de la commande
+ * @apiSuccess (Succès : 200) {String} token Token de la commande
+ * @apiSuccess (Succès : 200) {Number} montant Montant de la commande
+ *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+ *     HTTP/1.1 200 OK
+ *
+ *	{
+ * 		"commande": {
+ *    		"id": 1,
+ *    		"dateretrait": "2017-12-12",
+ *    		"etat": 1,
+ *    		"token": "174086",
+ *    		"montant": 0
+ *  	}
+ *	}
+ *
+ * @apiError (Erreur : 404) error Commande inexistante
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 404 Not Found
+ *
+ *     {
+ *       "error" : "ressource not found"
+ *     }
+ *
+ * @apiError (Erreur : 401) error Token exigé
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 401 Unauthorized
+ *
+ *     {
+ *       "error" : "token exigé"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Mauvais token
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden
+ *
+ *     {
+ *       "error" : "mauvais token"
+ *     }
+ */
+$app->post('/commandes/{id}/{date}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->dateCommande($req, $resp, $args);
+	}
+)->setName('dateCommande');
+
+$app->get('/commandes/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->etatCommande($req, $resp, $args);
+	}
+)->setName('etatCommande');
+
 /**
  * @apiGroup Commandes
  * @apiName ajouterSandwich
@@ -319,13 +396,13 @@ $app->post('/commandes',
  *
  *
  * @apiSuccess (Succès : 201) {Number} sandwich Identifiant du sandwich créé
- * @apiSuccess (Succès : 201) {Link} view Lien vers les détails de la commande du sandwich et pour supprimer le sandwich. 
+ * @apiSuccess (Succès : 201) {Link} view Lien vers les détails de la commande du sandwich et pour supprimer le sandwich.
  *
  * @apiSuccessExample {json} exemple de réponse en cas de succès
  *     HTTP/1.1 201 OK
  *
  *     {
- *        sandwich : 
+ *        sandwich :
  *            1
  *        ,
  *        links : {
@@ -346,7 +423,7 @@ $app->post('/commandes',
  * @apiError (Erreur : 403) error La commande n'est plus modifiable en raison de son état.
  *
  * @apiErrorExample {json} exemple de réponse en cas d'erreur
- *     HTTP/1.1 403 Forbidden 
+ *     HTTP/1.1 403 Forbidden
  *
  *     {
  *       "error" : "vous n\'êtes pas autorisé à modifier cette commande en raison de son état : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1/sandwichs"
@@ -355,7 +432,7 @@ $app->post('/commandes',
  * @apiError (Erreur : 403) error Le token de la commande entré est incorrect.
  *
  * @apiErrorExample {json} exemple de réponse en cas d'erreur
- *     HTTP/1.1 403 Forbidden 
+ *     HTTP/1.1 403 Forbidden
  *
  *     {
  *       "error" : "mauvais token : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1/sandwichs"
@@ -364,7 +441,7 @@ $app->post('/commandes',
  * @apiError (Erreur : 403) error Token de la commande manquant.
  *
  * @apiErrorExample {json} exemple de réponse en cas d'erreur
- *     HTTP/1.1 403 Forbidden 
+ *     HTTP/1.1 403 Forbidden
  *
  *     {
  *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1/sandwichs"
@@ -373,7 +450,7 @@ $app->post('/commandes',
  * @apiError (Erreur : 404) error La commande n'existe pas.
  *
  * @apiErrorExample {json} exemple de réponse en cas d'erreur
- *     HTTP/1.1 404 Not Found 
+ *     HTTP/1.1 404 Not Found
  *
  *     {
  *       "error" : "commande inexistante : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1/sandwichs"
@@ -401,13 +478,13 @@ $app->post('/commandes/{id}/sandwich',
  *
  *
  * @apiSuccess (Succès : 200) {Number} commande Identifiant de la commande
- * @apiSuccess (Succès : 200) {Link} view Lien vers les détails de la commande du sandwich supprimé. 
+ * @apiSuccess (Succès : 200) {Link} view Lien vers les détails de la commande du sandwich supprimé.
  *
  * @apiSuccessExample {json} exemple de réponse en cas de succès
  *     HTTP/1.1 200 OK
  *
  *     {
- *        commande : 
+ *        commande :
  *            1
  *        ,
  *        links : {
@@ -419,7 +496,7 @@ $app->post('/commandes/{id}/sandwich',
  * @apiError (Erreur : 403) error La commande n'est plus modifiable en raison de son état.
  *
  * @apiErrorExample {json} exemple de réponse en cas d'erreur
- *     HTTP/1.1 403 Forbidden 
+ *     HTTP/1.1 403 Forbidden
  *
  *     {
  *       "error" : "impossible de modifier la commande : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/sandwichs/2"
@@ -428,7 +505,7 @@ $app->post('/commandes/{id}/sandwich',
  * @apiError (Erreur : 403) error Le token de la commande entré est incorrect.
  *
  * @apiErrorExample {json} exemple de réponse en cas d'erreur
- *     HTTP/1.1 403 Forbidden 
+ *     HTTP/1.1 403 Forbidden
  *
  *     {
  *       "error" : "mauvais token : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/sandwichs/2"
@@ -437,7 +514,7 @@ $app->post('/commandes/{id}/sandwich',
  * @apiError (Erreur : 403) error Token de la commande manquant.
  *
  * @apiErrorExample {json} exemple de réponse en cas d'erreur
- *     HTTP/1.1 403 Forbidden 
+ *     HTTP/1.1 403 Forbidden
  *
  *     {
  *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/sandwichs/2"
@@ -446,7 +523,7 @@ $app->post('/commandes/{id}/sandwich',
  * @apiError (Erreur : 404) error Le sandwich n'existe pas.
  *
  * @apiErrorExample {json} exemple de réponse en cas d'erreur
- *     HTTP/1.1 404 Not Found 
+ *     HTTP/1.1 404 Not Found
  *
  *     {
  *       "error" : "sandwich inexistant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/sandwichs/2"
@@ -458,20 +535,6 @@ $app->delete('/sandwichs/{id}',
 		return (new lbs\control\lbscontrol($this))->supprimerSandwich($req, $resp, $args);
 	}
 )->setName('supprimerSandwich');
-
-$app->post('/commande/{id}/{date}',
-	function (Request $req, Response $resp, $args)
-	{
-		return (new lbs\control\lbscontrol($this))->dateCommande($req, $resp, $args);
-	}
-)->setName('dateCommande');
-
-$app->post('/commandes/{id}',
-	function (Request $req, Response $resp, $args)
-	{
-		return (new lbs\control\lbscontrol($this))->payerCommande($req, $resp, $args);
-	}
-)->setName('payerCommande');
 
 $app->post('/sandwichs/{id}',
 	function (Request $req, Response $resp, $args)
