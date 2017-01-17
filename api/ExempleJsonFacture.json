@@ -1,0 +1,9 @@
+{
+    "Facture": 
+        {
+            "Numero": 123456,
+            "NombreSandwich": 5,
+            "ListeSandwich": ["truc", "machin", "chose"]
+        }
+    
+}
