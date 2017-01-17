@@ -138,8 +138,8 @@ class lbsview
 		}
 		else
 		{
-			$json = '{ "sandwich" : '.$this->data->id.' , "links" : { "details" : { "href" : "/commandes/'.$_GET['token'].'" } , "delete" : { "href" : "/sandwichs/'.$this->data->id.'" } } }';
-			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+			$json = '{ "sandwich" : '.$this->data->id.' , "links" : { "details" : { "href" : "/commandes/'.$this->data->id.'" } , "delete" : { "href" : "/sandwichs/'.$this->data->id.'" } } }';
+			$resp = $resp->withStatus(201)->withHeader('Content-Type', 'application/json');
 		}
 		$resp->getBody()->write($json);
 		return $resp;

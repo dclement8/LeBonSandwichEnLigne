@@ -303,12 +303,161 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
-$app->post('/commandes/{id}/sandwichs',
+/**
+ * @apiGroup Commandes
+ * @apiName ajouterSandwich
+ * @apiVersion 0.1.0
+ *
+ * @api {post} /commandes/id/sandwichs  ajouter un sandwich à une commande précise
+ *
+ * @apiDescription Créer une ressource sandwich et l'associe à une commande. Retourne l'id du sandwich créé.
+ *
+ * Le résultat inclut un lien pour accéder aux détails de la commande créee ainsi qu'un lien pour supprimer le sandwich.
+ *
+ * @apiParam {String} json JSON des données servant à la création du sandwich (Exemple : { "taillepain" : 1 , "typepain" : 1 , "ingredients" : [1, 3, 4, 9] })
+ * @apiParam {String} token Token généré identifiant la commande (Exemple : 8x936gi2o18uwecfk5vvqwwv3fhya8f1)
+ *
+ *
+ * @apiSuccess (Succès : 201) {Number} sandwich Identifiant du sandwich créé
+ * @apiSuccess (Succès : 201) {Link} view Lien vers les détails de la commande du sandwich et pour supprimer le sandwich. 
+ *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+ *     HTTP/1.1 201 OK
+ *
+ *     {
+ *        sandwich : 
+ *            1
+ *        ,
+ *        links : {
+ *            "details" : { "href" : "/commandes/1" },
+ *			  "delete" : { "href" : "/sandwichs/1" }
+ *        }
+ *     }
+ *
+ * @apiError (Erreur : 400) error Données manquantes ou incorrectes pour créer le sandwich.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "données manquantes ou incorrectes pour la création de la commande : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1/sandwichs"
+ *     }
+ *
+ * @apiError (Erreur : 403) error La commande n'est plus modifiable en raison de son état.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden 
+ *
+ *     {
+ *       "error" : "vous n\'êtes pas autorisé à modifier cette commande en raison de son état : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1/sandwichs"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Le token de la commande entré est incorrect.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden 
+ *
+ *     {
+ *       "error" : "mauvais token : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1/sandwichs"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Token de la commande manquant.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden 
+ *
+ *     {
+ *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1/sandwichs"
+ *     }
+ *
+ * @apiError (Erreur : 404) error La commande n'existe pas.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 404 Not Found 
+ *
+ *     {
+ *       "error" : "commande inexistante : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1/sandwichs"
+ *     }
+ */
+$app->post('/commandes/{id}/sandwich',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->ajouterSandwich($req, $resp, $args);
 	}
 )->setName('ajouterSandwich');
+
+/**
+ * @apiGroup Sandwichs
+ * @apiName supprimerSandwich
+ * @apiVersion 0.1.0
+ *
+ * @api {delete} /sandwichs/id  supprime un sandwich
+ *
+ * @apiDescription Créer une ressource sandwich et l'associe à une commande. Retourne l'id de la commande.
+ *
+ * Le résultat inclut un lien pour accéder aux détails de la commande.
+ *
+ * @apiParam {String} token Token généré identifiant la commande (Exemple : 8x936gi2o18uwecfk5vvqwwv3fhya8f1)
+ *
+ *
+ * @apiSuccess (Succès : 200) {Number} commande Identifiant de la commande
+ * @apiSuccess (Succès : 200) {Link} view Lien vers les détails de la commande du sandwich supprimé. 
+ *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+ *     HTTP/1.1 200 OK
+ *
+ *     {
+ *        commande : 
+ *            1
+ *        ,
+ *        links : {
+ *            "view" : { "href" : "/commandes/1" }
+ *        }
+ *     }
+ *
+ *
+ * @apiError (Erreur : 403) error La commande n'est plus modifiable en raison de son état.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden 
+ *
+ *     {
+ *       "error" : "impossible de modifier la commande : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/sandwichs/2"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Le token de la commande entré est incorrect.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden 
+ *
+ *     {
+ *       "error" : "mauvais token : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/sandwichs/2"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Token de la commande manquant.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden 
+ *
+ *     {
+ *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/sandwichs/2"
+ *     }
+ *
+ * @apiError (Erreur : 404) error Le sandwich n'existe pas.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 404 Not Found 
+ *
+ *     {
+ *       "error" : "sandwich inexistant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/sandwichs/2"
+ *     }
+ */
+$app->delete('/sandwichs/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->supprimerSandwich($req, $resp, $args);
+	}
+)->setName('supprimerSandwich');
 
 $app->post('/commande/{id}/{date}',
 	function (Request $req, Response $resp, $args)
@@ -323,13 +472,6 @@ $app->post('/commandes/{id}',
 		return (new lbs\control\lbscontrol($this))->payerCommande($req, $resp, $args);
 	}
 )->setName('payerCommande');
-
-$app->delete('/sandwichs/{id}',
-	function (Request $req, Response $resp, $args)
-	{
-		return (new lbs\control\lbscontrol($this))->supprimerSandwich($req, $resp, $args);
-	}
-)->setName('supprimerSandwich');
 
 $app->post('/sandwichs/{id}',
 	function (Request $req, Response $resp, $args)

@@ -51,7 +51,6 @@ INSERT INTO `categorie` (`id`, `nom`, `description`) VALUES
 
 CREATE TABLE `commande` (
   `id` int(11) NOT NULL,
-  `montant` float NOT NULL,
   `dateretrait` date DEFAULT NULL,
   `etat` int(11) DEFAULT NULL,
   `token` varchar(500) DEFAULT NULL,

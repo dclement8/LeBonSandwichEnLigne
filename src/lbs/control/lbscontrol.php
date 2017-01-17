@@ -114,38 +114,47 @@ class lbscontrol
 				$commande = \lbs\model\commande::find($id);
 				if($commande->token == $token)
 				{
-					if((isset ($dataSandwich["taillepain"])) && (isset ($dataSandwich["typepain"])) && (isset ($dataSandwich["ingredients"])))
+					if($commande->etat <= 2)
 					{
-						$sandwich = new \lbs\model\sandwich();
-						$sandwich->taillepain = filter_var($dataSandwich["taillepain"], FILTER_SANITIZE_NUMBER_INT);
-						$sandwich->typepain = filter_var($dataSandwich["typepain"], FILTER_SANITIZE_NUMBER_INT);
-						$sandwich->id_commande = $id;
-						$sandwich->save();
-						$idSandwich = $sandwich->id;
-
-						// Enregistrer les ingrédients
-						if(is_array($dataSandwich["ingredients"]))
+						if((isset ($dataSandwich["taillepain"])) && (isset ($dataSandwich["typepain"])) && (isset ($dataSandwich["ingredients"])))
 						{
-							for($i = 0; $i < count($dataSandwich["ingredients"]); $i++)
+							$sandwich = new \lbs\model\sandwich();
+							$sandwich->taillepain = filter_var($dataSandwich["taillepain"], FILTER_SANITIZE_NUMBER_INT);
+							$sandwich->typepain = filter_var($dataSandwich["typepain"], FILTER_SANITIZE_NUMBER_INT);
+							$sandwich->id_commande = $id;
+							$sandwich->save();
+							$idSandwich = $sandwich->id;
+
+							// Enregistrer les ingrédients
+							if(is_array($dataSandwich["ingredients"]))
 							{
-								if(\lbs\model\ingredient::where('id', filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT))->get()->toJson() != "[]")
+								for($i = 0; $i < count($dataSandwich["ingredients"]); $i++)
 								{
-									$sandwich->ingredientsSandwich()->attach(filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT));
+									if(\lbs\model\ingredient::where('id', filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT))->get()->toJson() != "[]")
+									{
+										$sandwich->ingredientsSandwich()->attach(filter_var($dataSandwich["ingredients"][$i], FILTER_SANITIZE_NUMBER_INT));
+									}
 								}
+								return (new \lbs\view\lbsview($sandwich))->render('ajouterSandwich', $req, $resp, $args);
 							}
-							return (new \lbs\view\lbsview($sandwich))->render('ajouterSandwich', $req, $resp, $args);
+							else
+							{
+								$arr = array('error' => 'la donnée ingrédient n\'est pas un tableau : '.$req->getUri());
+								$resp = $resp->withStatus(400);
+								return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
+							}
 						}
 						else
 						{
-							$arr = array('error' => 'la donnée ingrédient n\'est pas un tableau : '.$req->getUri());
+							$arr = array('error' => 'données manquantes : '.$req->getUri());
 							$resp = $resp->withStatus(400);
 							return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 						}
 					}
 					else
 					{
-						$arr = array('error' => 'données manquantes : '.$req->getUri());
-						$resp = $resp->withStatus(400);
+						$arr = array('error' => 'vous n\'êtes pas autorisé à modifier cette commande en raison de son état : '.$req->getUri());
+						$resp = $resp->withStatus(403);
 						return (new \lbs\view\lbsview($arr))->render('ajouterSandwich', $req, $resp, $args);
 					}
 				}
@@ -224,17 +233,17 @@ class lbscontrol
 			$leSandwich = \lbs\model\sandwich::where('id', $id)->get();
 			if(isset($_GET["token"]))
 			{
-				$commande = \lbs\model\commande::where('id', $leSandwich->id_commande)->get();
+				$commande = \lbs\model\sandwich::find($id)->belongsTo('\lbs\model\commande', "id_commande")->first();
 				if($commande->token == $token)
 				{
-					$reqCommande = \lbs\model\sandwich::select('id_commande')->where('id', $id)-get();
+					$reqCommande = \lbs\model\sandwich::select('id_commande')->where('id', $id)->get();
 					$idCommande = "";
 					foreach ($reqCommande as $idCom)
 					{
 						$idCommande = $idCom->id_commande;
 					}
 
-					$commande = \lbs\model\commande::select('etat')->where('id', $idCommande)-get();
+					$commande = \lbs\model\commande::select('etat')->where('id', $idCommande)->get();
 					$etatCommande = "";
 					foreach ($commande as $etat)
 					{
@@ -243,6 +252,7 @@ class lbscontrol
 
 					if(($etatCommande == 1) || ($etatCommande == 2))
 					{
+						\lbs\model\sandwich::find($id)->ingredientsSandwich()->detach();
 						\lbs\model\sandwich::destroy($id);
 						return (new \lbs\view\lbsview($idCommande))->render('supprimerSandwich', $req, $resp, $args);
 					}
