@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mar 06 Décembre 2016 à 16:52
+-- Généré le :  Mar 10 Janvier 2017 à 15:44
 -- Version du serveur :  5.7.11
 -- Version de PHP :  7.0.4
 
@@ -52,7 +52,9 @@ INSERT INTO `categorie` (`id`, `nom`, `description`) VALUES
 CREATE TABLE `commande` (
   `id` int(11) NOT NULL,
   `dateretrait` date DEFAULT NULL,
-  `etat` int(11) DEFAULT NULL
+  `etat` int(11) DEFAULT NULL,
+  `token` varchar(500) DEFAULT NULL,
+  `montant` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -62,7 +64,7 @@ CREATE TABLE `commande` (
 --
 
 CREATE TABLE `contenir` (
-  `id` int(11) NOT NULL,
+  `id_sandwich` int(11) NOT NULL,
   `id_ingredient` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -129,16 +131,17 @@ ALTER TABLE `categorie`
 -- Index pour la table `commande`
 --
 ALTER TABLE `commande`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token` (`token`);
 
 --
 -- Index pour la table `contenir`
 --
 ALTER TABLE `contenir`
-  ADD PRIMARY KEY (`id`,`id_ingredient`),
+  ADD PRIMARY KEY (`id_sandwich`,`id_ingredient`),
   ADD KEY `FK_contenir_id_ingredient` (`id_ingredient`),
-  ADD KEY `id` (`id`),
-  ADD KEY `id_2` (`id`);
+  ADD KEY `id` (`id_sandwich`),
+  ADD KEY `id_2` (`id_sandwich`);
 
 --
 -- Index pour la table `ingredient`
@@ -186,7 +189,7 @@ ALTER TABLE `sandwich`
 -- Contraintes pour la table `contenir`
 --
 ALTER TABLE `contenir`
-  ADD CONSTRAINT `FK_contenir_id` FOREIGN KEY (`id`) REFERENCES `sandwich` (`id`),
+  ADD CONSTRAINT `FK_contenir_id` FOREIGN KEY (`id_sandwich`) REFERENCES `sandwich` (`id`),
   ADD CONSTRAINT `FK_contenir_id_ingredient` FOREIGN KEY (`id_ingredient`) REFERENCES `ingredient` (`id`);
 
 --

@@ -208,10 +208,16 @@ class lbscontrol
 
 	public function getFacture(Request $req, Response $resp, $args) 
 	{
-		
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		if($req = \lbs\model\commande::where('id', $id)->get()->toJson() !="[]"){
+			if($req->etat == 4) {
+				$reqCommande = \lbs\model\commande::where('id', $id)
+			}
 
 
+
+
+		}
 	}
-
 }
 
