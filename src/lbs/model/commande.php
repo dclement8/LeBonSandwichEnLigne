@@ -10,10 +10,11 @@ class commande extends \Illuminate\Database\Eloquent\Model
 	public $timestamps = false;
 
 
-	public function categorieIngredient()
+	public function commandeSandwich()
 	{
 		return $this->hasMany("\lbs\model\sandwich","id");
 	}
+
 
 }
 

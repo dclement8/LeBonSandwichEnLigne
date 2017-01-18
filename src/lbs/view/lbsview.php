@@ -232,6 +232,10 @@ class lbsview
 			case "suppCommande":
 				$this->resp = $this->suppCommande($req, $resp);
 				break;
+			case "getFacture":
+				$this->resp = $this->getFacture($req, $resp);
+				break;
+				
 		}
 
 		return $this->resp;
