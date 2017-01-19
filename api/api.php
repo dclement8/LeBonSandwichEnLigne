@@ -379,6 +379,51 @@ $app->post('/commandes',
  *     {
  *       "error" : "commande déjà traitée : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
  *     }
+ *
+ * @apiError (Erreur : 400) error Carte non supportée (seulement Visa et Mastercard accepté)
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "type de carte non supporté : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 400) error Numéro de carte incorrect
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "numéro de carte incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 400) error Carte expirée
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "carte expirée : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 400) error Code de carte incorrect
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "code incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 400) error Données bancaires incomplètes
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "données bancaires incomplètes : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
+ *     }
  */
 $app->post('/commandes/{id}',
 	function (Request $req, Response $resp, $args)
