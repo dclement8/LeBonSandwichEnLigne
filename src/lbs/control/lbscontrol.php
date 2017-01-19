@@ -183,7 +183,9 @@ class lbscontrol
 	public function dateCommande(Request $req, Response $resp, $args)
 	{
         function verifierDate($date) {
-            if($date === false || $date === null)
+            if(!is_array($date) || $date === false || $date === null)
+                return false;
+            if($date['error_count'] > 0)
                 return false;
             if(!checkdate($date['month'], $date['day'], $date['year']))
                 return false;
