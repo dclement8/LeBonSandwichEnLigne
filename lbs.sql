@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.5.1
+-- version 4.5.4.1
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
 -- Généré le :  Mar 10 Janvier 2017 à 15:44
 -- Version du serveur :  5.7.11
--- Version de PHP :  7.0.4
+-- Version de PHP :  5.6.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -57,6 +57,13 @@ CREATE TABLE `commande` (
   `montant` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Contenu de la table `commande`
+--
+
+INSERT INTO `commande` (`id`, `montant`, `dateretrait`, `etat`) VALUES
+(1, 0, '2017-01-04', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -96,7 +103,7 @@ INSERT INTO `ingredient` (`id`, `nom`, `cat_id`, `description`, `fournisseur`, `
 (6, 'avocat', 2, 'avocats en direct du Mexique !', 'la huerta bonita, Puebla', NULL),
 (7, 'blanc de poulet', 3, 'blanc de poulet émincé, et grillé comme il faut', 'élevage "le poulet volant"', NULL),
 (8, 'magret de canard', 3, 'magret de canard grillé, puis émincé', 'le colvert malin', NULL),
-(9, 'steack haché', 3, 'notre steack haché saveur, 5% MG., préparé juste avant cuisson.\r\nViande de notre producteur local.', 'ferme "la vache qui plane"', NULL),
+(9, 'steack haché', 3, 'notre steack haché saveur, 5% MG., préparé juste avant cuisson.\nViande de notre producteur local.', 'ferme "la vache qui plane"', NULL),
 (10, 'munster', 4, 'Du munster de Munster, en direct. Pour amateurs avertis !', 'fromagerie "le bon munster de toujours"', NULL),
 (11, 'chèvre frais', 4, 'un chèvre frais onctueux et goutu !', 'A la chèvre rieuse', NULL),
 (12, 'comté AOC 18mois', 4, 'le meilleur comté du monde !', 'fromagerie du jura', NULL),
@@ -107,15 +114,39 @@ INSERT INTO `ingredient` (`id`, `nom`, `cat_id`, `description`, `fournisseur`, `
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `taille`
+--
+
+CREATE TABLE IF NOT EXISTS `taille` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) NOT NULL,
+  `description` varchar(500) NOT NULL,
+  `prix` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `taille`
+--
+
+INSERT INTO `taille` (`id`, `nom`, `description`, `prix`) VALUES
+(1, 'Petite Faim', 'Petite Faim', '1.00'),
+(2, 'Moyenne Faim', 'Moyenne Faim', '1.50'),
+(3, 'Grosse Faim', 'Grosse Faim', '2.00'),
+(4, 'Ogre', 'Ogre', '3.00');
+
+
+--
 -- Structure de la table `sandwich`
 --
 
 CREATE TABLE `sandwich` (
   `id` int(11) NOT NULL,
-  `taillepain` int(11) DEFAULT NULL,
+  `taillepain` int(11) NOT NULL,
   `typepain` int(11) DEFAULT NULL,
   `id_commande` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 --
 -- Index pour les tables exportées
@@ -155,7 +186,8 @@ ALTER TABLE `ingredient`
 --
 ALTER TABLE `sandwich`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_sandwich_id_commande` (`id_commande`);
+  ADD KEY `FK_sandwich_id_commande` (`id_commande`),
+  ADD KEY `FK_sandwich_taillepain` (`taillepain`);
 
 --
 -- AUTO_INCREMENT pour les tables exportées
@@ -170,7 +202,7 @@ ALTER TABLE `categorie`
 -- AUTO_INCREMENT pour la table `commande`
 --
 ALTER TABLE `commande`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT pour la table `ingredient`
 --
@@ -181,6 +213,14 @@ ALTER TABLE `ingredient`
 --
 ALTER TABLE `sandwich`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `taille`
+--
+ALTER TABLE `taille`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  
+  
+  
 --
 -- Contraintes pour les tables exportées
 --
@@ -202,7 +242,8 @@ ALTER TABLE `ingredient`
 -- Contraintes pour la table `sandwich`
 --
 ALTER TABLE `sandwich`
-  ADD CONSTRAINT `FK_sandwich_id_commande` FOREIGN KEY (`id_commande`) REFERENCES `commande` (`id`);
+  ADD CONSTRAINT `FK_sandwich_id_commande` FOREIGN KEY (`id_commande`) REFERENCES `commande` (`id`),
+  ADD CONSTRAINT `FK_sandwich_taillepain` FOREIGN KEY (`taillepain`) REFERENCES `taille` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

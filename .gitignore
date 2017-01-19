@@ -1,13 +1,5 @@
-<<<<<<< HEAD
-*.ini
-~$tableau-stories-LBS-LP1.ods
-=======
-<<<<<<< HEAD
-*.ini
-~$tableau-stories-LBS-LP1.ods
-=======
 ~$tableau-stories-LBS-LP1.ods
 *.ini
 conf/config.ini
->>>>>>> origin/master
->>>>>>> refs/remotes/origin/master
+conf\config.ini
+
