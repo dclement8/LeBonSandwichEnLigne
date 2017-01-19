@@ -301,6 +301,85 @@ $app->post('/commandes',
 	}
 )->setName('creerCommande');
 
+/**
+ * @apiGroup Commandes
+ * @apiName payerCommande
+ * @apiVersion 0.1.0
+ *
+ * @api {post} /commandes/id  paye une commande
+ *
+ * @apiDescription Transmet les informations bancaires et retourne une représentation json de la commande.
+ *
+ * Seules les cartes Mastercard et Visa sont supportées !
+ *
+ * @apiParam {Number} id Identifiant de la commande
+ * @apiParam {String} token Token généré identifiant la commande (Exemple : 8x936gi2o18uwecfk5vvqwwv3fhya8f1)
+ * @apiParam {String} json JSON des données servant au paiement de la commande (Exemple : { "typecarte" : "mastercard" , "numero" : "5442 3811 6727 0320" , "expire" : "3/2020", "code" : "157" })
+ *
+ * @apiSuccess (Succès : 200) {Number} id Identifiant de la commande
+ * @apiSuccess (Succès : 200) {Date} dateretrait Date de retrait
+ * @apiSuccess (Succès : 200) {Number} etat Etat de la commande (1=créée, 2=payée, 3=en cours, 4=prête, 5=livrée)
+ * @apiSuccess (Succès : 200) {String} token Token de la commande
+ * @apiSuccess (Succès : 200) {Number} montant Montant de la commande
+ *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+ *     HTTP/1.1 200 OK
+ *
+ *	{
+ * 		"commande": {
+ *    		"id": 1,
+ *    		"dateretrait": "2017-12-12",
+ *    		"etat": 1,
+ *    		"token": "174086",
+ *    		"montant": 0
+ *  	}
+ *	}
+ *
+ * @apiError (Erreur : 401) error Token exigé
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 401 Unauthorized
+ *
+ *     {
+ *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1"
+ *     }
+ *
+ * @apiError (Erreur : 404) error Commande inexistante
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 404 Not Found
+ *
+ *     {
+ *       "error" : "ressource non trouvée : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Mauvais token
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden
+ *
+ *     {
+ *       "error" : "mauvais token : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 400) error Pas de données transmises (données bancaires)
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "pas de données : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 400) error Commande déjà traitée (état > 2)
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "commande déjà traitée : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/commandes/1?token=174086"
+ *     }
+ */
 $app->post('/commandes/{id}',
 	function (Request $req, Response $resp, $args)
 	{
