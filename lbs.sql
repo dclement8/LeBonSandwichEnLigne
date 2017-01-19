@@ -142,7 +142,7 @@ INSERT INTO `taille` (`id`, `nom`, `description`, `prix`) VALUES
 
 CREATE TABLE `sandwich` (
   `id` int(11) NOT NULL,
-  `taillepain` int(11) NOT NULL,
+  `taillepain` int(11) NULL,
   `typepain` int(11) DEFAULT NULL,
   `id_commande` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
