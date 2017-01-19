@@ -187,8 +187,9 @@ class lbsview
 	{
 		if(is_array($this->data))
 		{
+			$status = $this->getStatus();
 			$json = json_encode($this->data);
-			$resp = $resp->withStatus(400)->withHeader('Content-Type', 'application/json');
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
 		}
 		else
 		{
