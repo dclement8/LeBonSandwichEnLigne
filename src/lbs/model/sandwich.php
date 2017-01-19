@@ -14,16 +14,7 @@ class sandwich extends \Illuminate\Database\Eloquent\Model
 	{
 		return $this->belongsToMany("\lbs\model\ingredient","contenir","id_sandwich","id_ingredient");
 	}
-<<<<<<< HEAD
 
-	public function sandwichCommande()
-	{
-		return $this->belongsTo("\lbs\model\commande","id");
-	}
-
-	//BelongsTo
-=======
-	
 	// sandwich vers commande
 	public function commande()
 	{
@@ -35,5 +26,5 @@ class sandwich extends \Illuminate\Database\Eloquent\Model
 	{
 		return $this->belongsTo('\lbs\model\taille', "taillepain");
 	}
->>>>>>> refs/remotes/origin/master
+
 }
