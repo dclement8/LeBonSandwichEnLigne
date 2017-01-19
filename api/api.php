@@ -536,6 +536,107 @@ $app->delete('/sandwichs/{id}',
 	}
 )->setName('supprimerSandwich');
 
+/**
+ * @apiGroup Sandwichs
+ * @apiName modifierSandwich
+ * @apiVersion 0.1.0
+ *
+ * @api {post} /sandwichs/id  modifie un sandwich
+ *
+ * @apiDescription Modifie une ressource sandwich associée à une commande. Retourne le sandwich
+ *
+ * Si l'état est à 1 (commande créée), on peut modifier le sandwich de A à Z (type pain + ingrédients + taille pain)
+ * Si l'état est à 2 (commande payée), on peut modifier le sandwich à coût constant (type pain + ingrédients)
+ * Sinon, modification impossible
+ *
+ * Le résultat inclut un lien pour accéder aux détails de la commande et un lien pour supprimer le sandwich.
+ *
+ * @apiParam {String} token Token généré identifiant la commande (Exemple : 8x936gi2o18uwecfk5vvqwwv3fhya8f1)
+ * @apiParam {String} json JSON des données servant à la modification du sandwich (Exemple : { "taillepain" : 1 , "typepain" : 1 , "ingredients" : [1, 3, 4, 9] })
+ *
+ * @apiSuccess (Succès : 200) {Number} sandwich Identifiant du sandwich
+ * @apiSuccess (Succès : 200) {Link} details Lien vers les détails de la commande du sandwich modifié.
+ * @apiSuccess (Succès : 200) {Link} delete Lien pour supprimer sandwich modifié.
+ *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+ *     HTTP/1.1 200 OK
+ *
+ *	{
+ *		"sandwich": 1,
+ *		"links": {
+ *			"details": {
+ *				"href": "/commandes/174086"
+ *			},
+ *			"delete": {
+ *				"href": "/sandwichs/1"
+ *			}
+ *		}
+ *	}
+ *
+ *
+ * @apiError (Erreur : 401) error Token de la commande manquant.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 401 Unauthorized
+ *
+ *     {
+ *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/sandwichs/1"
+ *     }
+ *
+ * @apiError (Erreur : 400) error Pas de données comportant les informations afin de modifier un sandwich.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error": "pas de données : http://localhost/LeBonSandwichEnLigne/api/sandwichs/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Le token de la commande entré est incorrect.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden
+ *
+ *     {
+ *       "error" : "mauvais token : http://localhost/LeBonSandwichEnLigne/api/sandwichs/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 404) error Le sandwich n'existe pas.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 404 Not Found
+ *
+ *     {
+ *       "error" : "sandwich inexistant : http://localhost/LeBonSandwichEnLigne/api/sandwichs/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 400) error L'id de la commande ne correspond pas à la commande du sandwich spécifié.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "mauvais id : http://localhost/LeBonSandwichEnLigne/api/sandwichs/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 400) error La commande a déjà été traitée (l'état est strictement supérieur à 2)
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "commande déjà traitée : http://localhost/LeBonSandwichEnLigne/api/sandwichs/1?token=174086"
+ *     }
+ *
+ * @apiError (Erreur : 400) error La valeur de ingrédients n'est pas un tableau
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "la donnée ingrédient n'est pas un tableau : http://localhost/LeBonSandwichEnLigne/api/sandwichs/1?token=174086"
+ *     }
+ */
 $app->post('/sandwichs/{id}',
 	function (Request $req, Response $resp, $args)
 	{
