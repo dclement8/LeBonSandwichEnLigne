@@ -205,10 +205,11 @@ class lbscontrol
 			return (new \lbs\view\lbsview($arr))->render('supprimerSandwich', $req, $resp, $args);
 		}
 	}
-//----------------------------------------------------------
-	public function getFacture(Request $req, Response $resp, $args) 
+
+public function getFacture(Request $req, Response $resp, $args) 
 	{
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+
 		if(\lbs\model\commande::where('id', $id)->get()->toJson() !="[]") {
 			$comm = \lbs\model\commande::where('id', $id)->get();
 			foreach($comm as $q) {
@@ -219,6 +220,10 @@ class lbscontrol
 					// return (new \lbs\view\lbsview("403"))->render('suppCommande', $req, $resp);	
 				}
 			}
+
+
+
+
 		} else {
 			// return (new \lbs\view\lbsview("404"))->render('suppCommande', $req, $resp);
 		}
