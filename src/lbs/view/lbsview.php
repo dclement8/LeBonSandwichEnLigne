@@ -235,7 +235,19 @@ class lbsview
     }
 
 	private function creerCarte($req, $resp, $args) {
-
+		if(is_array($this->data))
+		{
+			$status = $this->getStatus();
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "id" : '.$this->data->id.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
 	}
 
 	private function lireCarte($req, $resp, $args) {

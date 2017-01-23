@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost
--- Généré le :  Lun 23 Janvier 2017 à 11:08
+-- Généré le :  Lun 23 Janvier 2017 à 12:45
 -- Version du serveur :  10.0.28-MariaDB-0ubuntu0.16.04.1
--- Version de PHP :  7.0.13-0ubuntu0.16.04.1
+-- Version de PHP :  5.6.30-1+deb.sury.org~xenial+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -28,10 +28,17 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `carteFidelite` (
   `id` int(11) NOT NULL,
-  `motDePasse` varchar(60) NOT NULL,
-  `token` varchar(500) NOT NULL,
-  `credit` int(11) NOT NULL
+  `motDePasse` varchar(60) DEFAULT NULL,
+  `token` varchar(500) DEFAULT NULL,
+  `credit` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Contenu de la table `carteFidelite`
+--
+
+INSERT INTO `carteFidelite` (`id`, `motDePasse`, `token`, `credit`) VALUES
+(1, '$2y$10$QKidhYRNsfy4NOCtl6N51e13LZvNHxAIgf.ZQ3PjBokAnZ/0Svtfe', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -221,7 +228,7 @@ ALTER TABLE `taille`
 -- AUTO_INCREMENT pour la table `carteFidelite`
 --
 ALTER TABLE `carteFidelite`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT pour la table `categorie`
 --

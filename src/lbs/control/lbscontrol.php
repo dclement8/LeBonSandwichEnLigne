@@ -546,6 +546,27 @@ class lbscontrol
 		// Exemple :
 		// { "motDePasse" : "azerty" }
         // Retourne un identifiant
+
+        if(empty($_POST["json"])) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'pas de données : '.$req->getUri()
+			)))->render('creerCarte', $req, $resp, $args);
+		}
+        $carteInfos = json_decode($_POST["json"], true);
+
+        if(empty($carteInfos['motDePasse'])) {
+            return (new \lbs\view\lbsview(array(
+				'error' => 'veuillez spécifier un mot de passe pour cette carte de fidélité : '.$req->getUri()
+			)))->render('creerCarte', $req, $resp, $args);
+        }
+
+        $carte = new \lbs\model\cartefidelite();
+        $carte->motDePasse = password_hash($carteInfos['motDePasse'], PASSWORD_BCRYPT);
+        $carte->token = null;
+        $carte->credit = 0;
+        $carte->save();
+
+        return (new \lbs\view\lbsview($carte))->render('creerCarte', $req, $resp, $args);
     }
 
     public function lireCarte(Request $req, Response $resp, $args)
