@@ -845,4 +845,25 @@ $app->post('/sandwichs/{id}',
 	}
 )->setName('modifierSandwich');
 
+$app->post('/carte',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->creerCarte($req, $resp, $args);
+	}
+)->setName('creerCarte');
+
+$app->post('/carte/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->lireCarte($req, $resp, $args);
+	}
+)->setName('lireCarte');
+
+$app->get('/carte',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->payerCarte($req, $resp, $args);
+	}
+)->setName('payerCarte');
+
 $app->run();
