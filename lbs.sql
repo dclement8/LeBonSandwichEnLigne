@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost
--- Généré le :  Lun 23 Janvier 2017 à 12:45
+-- Généré le :  Lun 23 Janvier 2017 à 14:26
 -- Version du serveur :  10.0.28-MariaDB-0ubuntu0.16.04.1
 -- Version de PHP :  5.6.30-1+deb.sury.org~xenial+1
 
@@ -30,7 +30,7 @@ CREATE TABLE `carteFidelite` (
   `id` int(11) NOT NULL,
   `motDePasse` varchar(60) DEFAULT NULL,
   `token` varchar(500) DEFAULT NULL,
-  `credit` int(11) DEFAULT NULL
+  `credit` int(11) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --

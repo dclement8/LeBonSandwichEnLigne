@@ -251,7 +251,19 @@ class lbsview
 	}
 
 	private function lireCarte($req, $resp, $args) {
-
+		if(is_array($this->data))
+		{
+			$status = $this->getStatus();
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "id" : '.$this->data->id.', "token" : "'.$this->data->token.'", "montant" : '.$this->data->credit.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
 	}
 
 	private function payerCarte($req, $resp, $args) {

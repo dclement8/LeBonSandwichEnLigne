@@ -852,14 +852,14 @@ $app->post('/carte',
 	}
 )->setName('creerCarte');
 
-$app->get('/carte/{id}',
+$app->post('/carte/{id}',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->lireCarte($req, $resp, $args);
 	}
 )->setName('lireCarte');
 
-$app->post('/carte/{id}',
+$app->get('/carte',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->payerCarte($req, $resp, $args);

@@ -576,6 +576,43 @@ class lbscontrol
 
         // Exemple :
 		// { "motDePasse" : "azerty" }
+        // TODO : basic authentification
+
+        $idCarte = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+        if(empty($_POST["json"])) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'pas de données : '.$req->getUri()
+			)))->render('lireCarte', $req, $resp, $args);
+		}
+        $carteInfos = json_decode($_POST["json"], true);
+
+        if(empty($carteInfos['motDePasse'])) {
+            return (new \lbs\view\lbsview(array(
+				'error' => 'veuillez spécifier un mot de passe pour cette carte de fidélité : '.$req->getUri()
+			)))->render('lireCarte', $req, $resp, $args);
+        }
+
+        $carte = \lbs\model\cartefidelite::find($idCarte);
+        if($carte === false || $carte === null) {
+            return (new \lbs\view\lbsview(array(
+                'error' => 'Ressource non trouvée : '.$req->getUri(),
+                'status' => 404
+            )))->render('lireCarte', $req, $resp, $args);
+		}
+
+        if(!password_verify($carteInfos['motDePasse'], $carte->motDePasse)) {
+            return (new \lbs\view\lbsview(array(
+				'error' => 'mauvais mot de passe : '.$req->getUri(),
+                'status' => 403
+			)))->render('lireCarte', $req, $resp, $args);
+        }
+
+        $factory = new \RandomLib\Factory;
+        $generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
+        $carte->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz0123456789');
+        $carte->save();
+
+        return (new \lbs\view\lbsview($carte))->render('lireCarte', $req, $resp, $args);
     }
 
     public function payerCarte(Request $req, Response $resp, $args)
@@ -583,10 +620,7 @@ class lbscontrol
         // Payer un utilisant une carte de fidélité. Le token de la carte doit être fourni
         // Si montant atteint > 100 € => réduction de 5% accordée sur la commande et montant remis à 0
 
-        // Le token de la carte doit être fourni (en GET) ainsi que celui de la commande
+        // Le token de la carte doit être fourni (en GET) ainsi que celui de la commande (en GET aussi)
         // Une fois payé, on remet le token à null
-
-        // Exemple :
-		// { "commande" : "174086" }
     }
 }
