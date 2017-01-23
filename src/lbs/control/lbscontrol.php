@@ -1336,35 +1336,17 @@ class lbscontrol
 
     public function getFacture(Request $req, Response $resp, $args) 
 	{
-		
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
-		
-		
 		if(\lbs\model\commande::where('id', $id)->get()->toJson() !="[]") {
-			
-			
 			//$comm = \lbs\model\commande::where('id', $id)->sandwich()->get();
-			
 			$comm = \lbs\model\commande::with('sandwich')
 			->where('id', $id)->get();
-			
-			
 			$count = \lbs\model\commande::with('sandwich')
 			->where('id', $id)->count();
-			
-			
-			
-			
 			if($q->etat == 4) {
-				
-				
 				$sand = $q->sandwich;
-				
 				foreach($sand as $s) {
-					
 					$totalSand = array();
-					
-					
 					// 					print $q->id . ' </br>';
 					// 					print $q->dateretrait . ' </br>';
 					// 					print 'Taille de pain ' . $s->taillepain . ' </br>';
@@ -1374,55 +1356,31 @@ class lbscontrol
 				}
 			}
 			else {
-				
-				
 				//return (new \lbs\view\lbsview("403"))->render('suppCommande', $req, $resp);
-				
 			}
-			
-			
 		}
 		else {
-			
 			// return (new \lbs\view\lbsview("404"))->render('suppCommande', $req, $resp);
-			
 			echo 'ID qui existe pas';
 		}
 	}
-
     	public function suppCommande(Request $req, Response $resp, $args)
 	{
-		
-		
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
-		
 		if($req = \lbs\model\commande::where('id', $id)->get()->toJson() !="[]"){
-			
-			
 			foreach($req as $q) {
-				
 				if($q->etat == 1) {
-					
 					\lbs\model\commande::destroy($id);
-					
 					return (new \lbs\view\lbsview("200"))->render('suppCommande', $req, $resp);
-					
 				}
 				else {
-					
 					return (new \lbs\view\lbsview("403"))->render('suppCommande', $req, $resp);
-					
 				}
-				
 			}
-			
 		}
 		else {
-			
 			return (new \lbs\view\lbsview("404"))->render('suppCommande', $req, $resp);
-			
 		}
-		
 	}	
 
 }
