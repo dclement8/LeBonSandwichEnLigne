@@ -1338,26 +1338,45 @@ class lbscontrol
 	{
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
 		if(\lbs\model\commande::where('id', $id)->get()->toJson() !="[]") {
-			//$comm = \lbs\model\commande::where('id', $id)->sandwich()->get();
+
 			$comm = \lbs\model\commande::with('sandwich')
 			->where('id', $id)->get();
+
 			$count = \lbs\model\commande::with('sandwich')
 			->where('id', $id)->count();
-			if($q->etat == 4) {
-				$sand = $q->sandwich;
-				foreach($sand as $s) {
-					$totalSand = array();
-					// 					print $q->id . ' </br>';
-					// 					print $q->dateretrait . ' </br>';
-					// 					print 'Taille de pain ' . $s->taillepain . ' </br>';
-					// 					print 'Type de pain' . $s->typepain . ' </br>';
-					$totalSand[] = $s->id;
-					echo count($totalSand);	
+
+			foreach($comm as $q) {
+
+				if($q->etat == 4) {
+					$sand = $q->sandwich;
+					$totalCount = 0;
+					$json = "";
+					foreach($sand as $s) {
+						$totalSand = array();
+						$totalSand[] = $s->id;
+						$totalCount = $totalCount + count($totalSand);
+											
+						$id = $q->id;
+						$date = $q->dateretrait;
+			
+					}
+						$json =		'{
+										"Facture": 
+											{
+												"Numero": "'.$q->id.'",
+												"DateRetrait": "'.$q->dateretrait.'",
+												"NombreSandwich": "'.$totalCount.'",
+											}
+										
+									}';
+						
+						echo $json;
+				}
+				else {
+					//return (new \lbs\view\lbsview("403"))->render('suppCommande', $req, $resp);
 				}
 			}
-			else {
-				//return (new \lbs\view\lbsview("403"))->render('suppCommande', $req, $resp);
-			}
+
 		}
 		else {
 			// return (new \lbs\view\lbsview("404"))->render('suppCommande', $req, $resp);
