@@ -234,6 +234,18 @@ class lbsview
 		return $resp;
     }
 
+	private function creerCarte($req, $resp, $args) {
+
+	}
+
+	private function lireCarte($req, $resp, $args) {
+
+	}
+
+	private function payerCarte($req, $resp, $args) {
+
+	}
+
 	public function render($selector, $req, $resp, $args)
 	{
 		switch($selector)
@@ -273,6 +285,15 @@ class lbsview
 				break;
 			case "etatCommande":
 				$this->resp = $this->etatCommande($req, $resp, $args);
+				break;
+			case "creerCarte":
+				$this->resp = $this->creerCarte($req, $resp, $args);
+				break;
+			case "lireCarte":
+				$this->resp = $this->lireCarte($req, $resp, $args);
+				break;
+			case "payerCarte":
+				$this->resp = $this->payerCarte($req, $resp, $args);
 				break;
 		}
 

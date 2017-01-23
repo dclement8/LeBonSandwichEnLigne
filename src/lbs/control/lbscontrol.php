@@ -537,4 +537,35 @@ class lbscontrol
 			)))->render('payerCommande', $req, $resp, $args);
         }
 	}
+
+    public function creerCarte(Request $req, Response $resp, $args)
+	{
+        // Crée une carte de fidélité
+		// Les données sont envoyées en POST en JSON
+
+		// Exemple :
+		// { "motDePasse" : "azerty" }
+        // Retourne un identifiant
+    }
+
+    public function lireCarte(Request $req, Response $resp, $args)
+	{
+        // Lit une carte de fidélité (renvoie un token à usage unique et le montant) => l'id et le mot de passe doivent correspondre
+		// Les données sont envoyées en POST en JSON
+
+        // Exemple :
+		// { "motDePasse" : "azerty" }
+    }
+
+    public function payerCarte(Request $req, Response $resp, $args)
+	{
+        // Payer un utilisant une carte de fidélité. Le token de la carte doit être fourni
+        // Si montant atteint > 100 € => réduction de 5% accordée sur la commande et montant remis à 0
+
+        // Le token de la carte doit être fourni (en GET) ainsi que celui de la commande
+        // Une fois payé, on remet le token à null
+
+        // Exemple :
+		// { "commande" : "174086" }
+    }
 }
