@@ -267,7 +267,19 @@ class lbsview
 	}
 
 	private function payerCarte($req, $resp, $args) {
-
+		if(is_array($this->data))
+		{
+			$status = $this->getStatus();
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "commande" : '.$this->data.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
 	}
 
 	public function render($selector, $req, $resp, $args)

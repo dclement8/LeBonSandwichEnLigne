@@ -323,7 +323,7 @@ class lbscontrol
 			)))->render('modifierSandwich', $req, $resp, $args);
 		}
 
-		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_NUMBER_INT);
+		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		if(empty($_POST["json"])) {
 			return (new \lbs\view\lbsview(array(
 				'error' => 'pas de données : '.$req->getUri()
@@ -404,7 +404,7 @@ class lbscontrol
 			)))->render('etatCommande', $req, $resp, $args);
 		}
 
-		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_NUMBER_INT);
+		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $commande = \lbs\model\commande::find($idCommande);
         if($commande === false  || $commande === null) {
@@ -466,7 +466,7 @@ class lbscontrol
 			)))->render('payerCommande', $req, $resp, $args);
 		}
 
-		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_NUMBER_INT);
+		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		if(empty($_POST["json"])) {
 			return (new \lbs\view\lbsview(array(
 				'error' => 'pas de données : '.$req->getUri()
@@ -622,5 +622,48 @@ class lbscontrol
 
         // Le token de la carte doit être fourni (en GET) ainsi que celui de la commande (en GET aussi)
         // Une fois payé, on remet le token à null
+
+        if(empty($_GET["token"]) || empty($_GET["commande"])) {
+			return (new \lbs\view\lbsview(array(
+				'error' => 'token de carte fidélité et de commande exigé : '.$req->getUri(),
+                'status' => 401
+			)))->render('payerCarte', $req, $resp, $args);
+		}
+
+        $carteToken = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $commandeToken = filter_var($_GET["commande"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        $commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
+        if($commande === null || $commande === false) {
+            return (new \lbs\view\lbsview(array(
+				'error' => 'mauvais token de commande : '.$req->getUri(),
+                'status' => 403
+			)))->render('payerCarte', $req, $resp, $args);
+        }
+
+        if($commande->etat != 1) {
+            return (new \lbs\view\lbsview(array(
+				'error' => 'la commande est déjà payée : '.$req->getUri()
+			)))->render('payerCarte', $req, $resp, $args);
+        }
+
+        $carte = \lbs\model\cartefidelite::where('token', '=', $carteToken)->first();
+        if($carte === null || $carte === false) {
+            return (new \lbs\view\lbsview(array(
+				'error' => 'mauvais token de carte : '.$req->getUri(),
+                'status' => 403
+			)))->render('payerCarte', $req, $resp, $args);
+        }
+
+        $carte->credit += $commande->montant;
+        if($carte->credit > 100) {
+            $commande->montant = round(($commande->montant) * 0.95, 2);
+            $commande->save();
+            $carte->credit = 0;
+        }
+
+        $carte->token = null;
+        $carte->save();
+        return (new \lbs\view\lbsview($commande))->render('payerCarte', $req, $resp, $args);
     }
 }
