@@ -3,12 +3,29 @@
 require_once("../vendor/autoload.php");
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+
+// Connexion à la BDD
+$connexion = new \lbs\AppInit();
+$pdo = $connexion->bootEloquent("../conf/config.ini");
+
 $configuration = [
 	'settings' => [
 		'displayErrorDetails' => true ]
 ];
 $c = new\Slim\Container($configuration);
 $app = new \Slim\App($c);
+
+// Authentication HTTP Basic pour avoir accès à la carte de fidélité (username : id carte de fidélité, password : mot de passe carte de fidélité)
+/*$app->add(new \Slim\Middleware\HttpBasicAuthentication([
+    "path" => ["/carte"],
+	"realm" => "Protected",
+    "authenticator" => new \Slim\Middleware\HttpBasicAuthentication\PdoAuthenticator([
+        "pdo" => $pdo,
+        "table" => "cartefidelite",
+        "user" => "id",
+        "hash" => "motDePasse"
+    ])
+]));*/
 
 /**
  * @apiGroup Categories
@@ -845,6 +862,47 @@ $app->post('/sandwichs/{id}',
 	}
 )->setName('modifierSandwich');
 
+/**
+ * @apiGroup Carte
+ * @apiName creerCarte
+ * @apiVersion 0.1.0
+ *
+ * @api {post} /carte  crée une nouvelle carte de fidélité
+ *
+ * @apiDescription Crée une carte de fidélité avec le mot de passe spécifié. Retourne son identifiant
+ *
+ * Le crédit lors de la création est de 0 €
+ *
+ * @apiParam {String} json JSON des données servant à la création de la carte (Exemple : { "motDePasse" : "azerty" })
+ *
+ * @apiSuccess (Succès : 200) {Number} id Identifiant de la carte de fidélité
+ *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+ *     HTTP/1.1 200 OK
+ *
+ *	{
+ *		"id": 1
+ *	}
+ *
+ * @apiError (Erreur : 400) error Pas de données comportant les informations afin de créer la carte de fidélité.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error": "pas de données : http://localhost/LeBonSandwichEnLigne/api/carte"
+ *     }
+ *
+ * @apiError (Erreur : 400) error Un mot de passe doit être spécifié.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "veuillez spécifier un mot de passe pour cette carte de fidélité : http://localhost/LeBonSandwichEnLigne/api/carte"
+ *     }
+ *
+ */
 $app->post('/carte',
 	function (Request $req, Response $resp, $args)
 	{
@@ -852,6 +910,70 @@ $app->post('/carte',
 	}
 )->setName('creerCarte');
 
+/**
+ * @apiGroup Carte
+ * @apiName lireCarte
+ * @apiVersion 0.1.0
+ *
+ * @api {post} /carte/id  Lit une carte de fidélité
+ *
+ * @apiDescription  Renvoit un token à usage unique ainsi que le montant
+ *
+ *  le mot de passe stocké et le mot de passe envoyé doivent correspondre
+ *
+ * @apiParam {String} id Identifiant de la carte de fidélité
+ * @apiParam {String} json JSON des données servant à la lecture de la carte (Exemple : { "motDePasse" : "azerty" })
+ *
+ * @apiSuccess (Succès : 200) {Number} id Identifiant de la carte de fidélité
+ * @apiSuccess (Succès : 200) {String} token Token unique généré
+ * @apiSuccess (Succès : 200) {Number} credit Crédit de la carte de fidélité
+ *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+ *     HTTP/1.1 200 OK
+ *
+ *	{
+ *		"id": 1,
+ *		"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+ *		"credit": 10
+ *	}
+ *
+ * @apiError (Erreur : 400) error Pas de données comportant les informations afin de créer la carte de fidélité.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error": "pas de données : http://localhost/LeBonSandwichEnLigne/api/carte/1"
+ *     }
+ *
+ * @apiError (Erreur : 400) error Un mot de passe doit être spécifié.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "veuillez spécifier un mot de passe pour cette carte de fidélité : http://localhost/LeBonSandwichEnLigne/api/carte/1"
+ *     }
+ *
+ * @apiError (Erreur : 404) error La carte n'existe pas.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 404 Not Found
+ *
+ *     {
+ *       "error" : "Ressource non trouvée : http://localhost/LeBonSandwichEnLigne/api/carte/1"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Le mot de passe entré de la carte est incorrect.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden
+ *
+ *     {
+ *       "error" : "mauvais mot de passe : http://localhost/LeBonSandwichEnLigne/api/carte/1"
+ *     }
+ *
+ */
 $app->post('/carte/{id}',
 	function (Request $req, Response $resp, $args)
 	{
@@ -859,6 +981,76 @@ $app->post('/carte/{id}',
 	}
 )->setName('lireCarte');
 
+/**
+ * @apiGroup Carte
+ * @apiName payerCarte
+ * @apiVersion 0.1.0
+ *
+ * @api {get} /carte  paye une commande en utilisant une carte de fidélité
+ *
+ * @apiDescription  Renvoit la commande avec le montant réduit si tel est le cas
+ *
+ *  Le token de la carte doit être fourni (en GET) ainsi que celui de la commande (en GET aussi)
+ *  Si montant atteint > 100 € => réduction de 5% accordée sur la commande et montant remis à 0
+ *  Une fois payé, on remet le token à null
+ *
+ * @apiParam {String} id Identifiant de la carte de fidélité
+ * @apiParam {String} json JSON des données servant à la lecture de la carte (Exemple : { "motDePasse" : "azerty" })
+ *
+ * @apiSuccess (Succès : 200) {Number} id Identifiant de la carte de fidélité
+ * @apiSuccess (Succès : 200) {String} token Token unique généré
+ * @apiSuccess (Succès : 200) {Number} credit Crédit de la carte de fidélité
+ *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+ *     HTTP/1.1 200 OK
+ *
+ *	{
+ * 		"commande": {
+ *    		"id": 1,
+ *    		"dateretrait": "2017-12-12",
+ *    		"etat": 1,
+ *    		"token": "174086",
+ *    		"montant": 5
+ *  	}
+ *	}
+ *
+ * @apiError (Erreur : 401) error Token de la commande et/ou de la carte manquant.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 401 Unauthorized
+ *
+ *     {
+ *       "error" : "token de carte fidélité et de commande exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/carte"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Mauvais token de commande.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden
+ *
+ *     {
+ *       "error" : "mauvais token de commande : http://localhost/LeBonSandwichEnLigne/api/carte"
+ *     }
+ *
+ * @apiError (Erreur : 403) error Mauvais token de carte.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 403 Forbidden
+ *
+ *     {
+ *       "error" : "mauvais token de carte : http://localhost/LeBonSandwichEnLigne/api/carte"
+ *     }
+ *
+ * @apiError (Erreur : 400) error La commande est déjà payée.
+ *
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+ *     HTTP/1.1 400 Bad Request
+ *
+ *     {
+ *       "error" : "la commande est déjà payée : http://localhost/LeBonSandwichEnLigne/api/carte/1"
+ *     }
+ *
+ */
 $app->get('/carte',
 	function (Request $req, Response $resp, $args)
 	{

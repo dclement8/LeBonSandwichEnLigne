@@ -5,10 +5,6 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \lbs\AppInit;
 
-// Connexion à la BDD
-$connexion = new AppInit();
-$connexion->bootEloquent("../conf/config.ini");
-
 class lbscontrol
 {
     protected $c=null;
