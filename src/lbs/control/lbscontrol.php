@@ -1343,10 +1343,8 @@ class lbscontrol
 			->where('id', $id)->get();
 
 			$count = \lbs\model\commande::with('sandwich')
-			->where('id', $id)->count();
-
+			->where('id', $id);
 			foreach($comm as $q) {
-
 				if($q->etat == 4) {
 					$sand = $q->sandwich;
 					$totalCount = 0;
@@ -1354,33 +1352,22 @@ class lbscontrol
 					foreach($sand as $s) {
 						$totalSand = array();
 						$totalSand[] = $s->id;
-						$totalCount = $totalCount + count($totalSand);
-											
+						$totalCount = $totalCount + count($totalSand);				
 						$id = $q->id;
 						$date = $q->dateretrait;
-			
 					}
-						$json =		'{
-										"Facture": 
-											{
-												"Numero": "'.$q->id.'",
-												"DateRetrait": "'.$q->dateretrait.'",
-												"NombreSandwich": "'.$totalCount.'",
-											}
-										
-									}';
+						$json =		'{ "Facture": {	"Numero": "'.$q->id.'",	"DateRetrait": "'.$q->dateretrait.'", "NombreSandwich": "'.$totalCount.'", "NombreSandwich": "'.$q->montant.'" } }';
 						
-						echo $json;
+						return (new \lbs\view\lbsview($json))->render('getFacture', $req, $resp, $args );
+
 				}
 				else {
-					//return (new \lbs\view\lbsview("403"))->render('suppCommande', $req, $resp);
+					return (new \lbs\view\lbsview("403"))->render('getFacture', $req, $resp, $args);
 				}
 			}
-
 		}
 		else {
-			// return (new \lbs\view\lbsview("404"))->render('suppCommande', $req, $resp);
-			echo 'ID qui existe pas';
+			return (new \lbs\view\lbsview("404"))->render('getFacture', $req, $resp, $args);
 		}
 	}
     	public function suppCommande(Request $req, Response $resp, $args)
@@ -1400,6 +1387,5 @@ class lbscontrol
 		else {
 			return (new \lbs\view\lbsview("404"))->render('suppCommande', $req, $resp);
 		}
-	}	
 
 }
