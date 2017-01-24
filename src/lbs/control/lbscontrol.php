@@ -1399,10 +1399,7 @@ class lbscontrol
 			$reqTarif = \lbs\model\taille::select()->get();
 
 			foreach($reqTarif as $reqt) {
-
 					$tarifTab[$reqt->id] = $reqt->prix;
-					echo "truc";
-				
 			}
 			var_dump($tarifTab);
 			// $comm = \lbs\model\commande::with('sandwich')
