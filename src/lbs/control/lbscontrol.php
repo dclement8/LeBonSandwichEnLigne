@@ -58,9 +58,10 @@ class lbscontrol
 		// Les données sont envoyées en POST en JSON
 
 		// Exemple :
-		// { "dateretrait" : "01/01/2000" , "montant" : 10 }
+		// { "dateretrait" : "2000-01-01" , "montant" : 10 }
 
-		$obj = json_decode($_POST["json"]);
+		$obj = json_decode($req->getBody());
+		
 		$dateRetrait = filter_var($obj->dateretrait, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 		$commande = new \lbs\model\commande();
@@ -101,7 +102,7 @@ class lbscontrol
 
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
 		$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-		$dataSandwich = json_decode($_POST["json"], true);
+		$dataSandwich = json_decode($req->getBody(), true);
 
 		if(\lbs\model\commande::where('id', $id)->get()->toJson() != "[]")
 		{
@@ -320,12 +321,12 @@ class lbscontrol
 		}
 
 		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-		if(empty($_POST["json"])) {
+		if(empty($req->getBody())) {
 			return (new \lbs\view\lbsview(array(
 				'error' => 'pas de données : '.$req->getUri()
 			)))->render('modifierSandwich', $req, $resp, $args);
 		}
-		$dataSandwich = json_decode($_POST["json"], true);
+		$dataSandwich = json_decode($req->getBody(), true);
 
 		$commande = \lbs\model\commande::where('token', '=', $commandeToken)->first();
 		if($commande === false || $commande === null) {
@@ -463,12 +464,12 @@ class lbscontrol
 		}
 
 		$commandeToken = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-		if(empty($_POST["json"])) {
+		if(empty($req->getBody())) {
 			return (new \lbs\view\lbsview(array(
 				'error' => 'pas de données : '.$req->getUri()
 			)))->render('payerCommande', $req, $resp, $args);
 		}
-		$dataCommande = json_decode($_POST["json"], true);
+		$dataCommande = json_decode($req->getBody(), true);
 
         $commande = \lbs\model\commande::find($idCommande);
 		if($commande === false || $commande === null) {
@@ -543,12 +544,12 @@ class lbscontrol
 		// { "motDePasse" : "azerty" }
         // Retourne un identifiant
 
-        if(empty($_POST["json"])) {
+        if(empty($req->getBody())) {
 			return (new \lbs\view\lbsview(array(
 				'error' => 'pas de données : '.$req->getUri()
 			)))->render('creerCarte', $req, $resp, $args);
 		}
-        $carteInfos = json_decode($_POST["json"], true);
+        $carteInfos = json_decode($req->getBody(), true);
 
         if(empty($carteInfos['motDePasse'])) {
             return (new \lbs\view\lbsview(array(
@@ -575,12 +576,12 @@ class lbscontrol
         // TODO : basic authentification
 
         $idCarte = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
-        if(empty($_POST["json"])) {
+        if(empty($req->getBody())) {
 			return (new \lbs\view\lbsview(array(
 				'error' => 'pas de données : '.$req->getUri()
 			)))->render('lireCarte', $req, $resp, $args);
 		}
-        $carteInfos = json_decode($_POST["json"], true);
+        $carteInfos = json_decode($req->getBody(), true);
 
         if(empty($carteInfos['motDePasse'])) {
             return (new \lbs\view\lbsview(array(
