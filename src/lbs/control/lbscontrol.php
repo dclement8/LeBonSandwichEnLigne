@@ -1387,5 +1387,42 @@ class lbscontrol
 		else {
 			return (new \lbs\view\lbsview("404"))->render('suppCommande', $req, $resp);
 		}
+	}
+
+	public function getCommande(Request $req, Response $resp, $args) 
+	{
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		if(\lbs\model\commande::where('id', $id)->get()->toJson() !="[]") {
+
+			$tarifTab = array();
+
+			$reqTarif = \lbs\model\taille::select()->get();
+
+			foreach($reqTarif as $reqt) {
+
+					$tarifTab[$reqt->id] = $reqt->prix;
+					echo "truc";
+				
+			}
+			var_dump($tarifTab);
+			// $comm = \lbs\model\commande::with('sandwich')
+			// ->where('id', $id)->get();
+
+			// $count = \lbs\model\commande::with('sandwich')
+			// ->where('id', $id)->count();
+
+			// foreach($comm as $q) {
+	
+						
+			// 			return (new \lbs\view\lbsview($json))->render('getCommande', $req, $resp, $args );
+			// }
+
+			
+		} else {
+			// return (new \lbs\view\lbsview("404"))->render('getCommande', $req, $resp, $args);
+			echo "Mauvais ID";
+		}
+	}
+	
 
 }
