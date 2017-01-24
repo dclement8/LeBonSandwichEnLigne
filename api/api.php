@@ -1746,4 +1746,11 @@ $app->get('/suppCommande/{id}',
 	}
 )->setName('suppCommande');
 
+$app->get('/getCommande/{id}',
+	function (Request $req, Response $resp, $args)
+	{
+		return (new lbs\control\lbscontrol($this))->getCommande($req, $resp, $args);
+	}
+)->setName('getCommande');
+
 $app->run();
