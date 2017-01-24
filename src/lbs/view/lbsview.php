@@ -234,6 +234,54 @@ class lbsview
 		return $resp;
     }
 
+	private function creerCarte($req, $resp, $args) {
+		if(is_array($this->data))
+		{
+			$status = $this->getStatus();
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "id" : '.$this->data->id.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+	}
+
+	private function lireCarte($req, $resp, $args) {
+		if(is_array($this->data))
+		{
+			$status = $this->getStatus();
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "id" : '.$this->data->id.', "token" : "'.$this->data->token.'", "montant" : '.$this->data->credit.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+	}
+
+	private function payerCarte($req, $resp, $args) {
+		if(is_array($this->data))
+		{
+			$status = $this->getStatus();
+			$json = json_encode($this->data);
+			$resp = $resp->withStatus($status)->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = '{ "commande" : '.$this->data.'}';
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+	}
+
 	public function render($selector, $req, $resp, $args)
 	{
 		switch($selector)
@@ -273,6 +321,15 @@ class lbsview
 				break;
 			case "etatCommande":
 				$this->resp = $this->etatCommande($req, $resp, $args);
+				break;
+			case "creerCarte":
+				$this->resp = $this->creerCarte($req, $resp, $args);
+				break;
+			case "lireCarte":
+				$this->resp = $this->lireCarte($req, $resp, $args);
+				break;
+			case "payerCarte":
+				$this->resp = $this->payerCarte($req, $resp, $args);
 				break;
 		}
 
