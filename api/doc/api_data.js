@@ -87,7 +87,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Categories"
   },
   {
@@ -178,7 +178,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Categories"
   },
   {
@@ -230,7 +230,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Categories"
   },
   {
@@ -343,7 +343,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Commandes"
   },
   {
@@ -420,7 +420,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Commandes"
   },
   {
@@ -569,7 +569,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Commandes"
   },
   {
@@ -693,7 +693,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Commandes"
   },
   {
@@ -867,7 +867,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Commandes"
   },
   {
@@ -951,7 +951,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Ingredients"
   },
   {
@@ -1042,7 +1042,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Ingredients"
   },
   {
@@ -1180,7 +1180,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Sandwichs"
   },
   {
@@ -1273,7 +1273,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "././/api/api.php",
+    "filename": "././/api.php",
     "groupTitle": "Sandwichs"
   }
 ] });
