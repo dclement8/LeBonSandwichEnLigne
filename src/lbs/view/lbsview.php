@@ -259,7 +259,7 @@ class lbsview
 		}
 		else
 		{
-			$json = '{ "id" : '.$this->data->id.', "token" : "'.$this->data->token.'", "montant" : '.$this->data->credit.'}';
+			$json = '{ "id" : '.$this->data->id.', "token" : "'.$this->data->token.'", "credit" : '.$this->data->credit.'}';
 			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
 		}
 		$resp->getBody()->write($json);
