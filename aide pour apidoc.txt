@@ -1,0 +1,6 @@
+NodeJS doit être installé ==> sudo apt-get install nodejs
+apidoc doit être installé ==> sudo npm install apidoc -g
+
+La commande magique pour tout générer ==> apidoc -i ./ -o apidoc/
+
+Si vous avez une erreur du style : "/usr/bin/env: node: Aucun fichier ou dossier de ce type" ==> sudo ln -s /usr/bin/nodejs /usr/bin/node
