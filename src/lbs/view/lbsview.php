@@ -116,12 +116,12 @@ class lbsview
 		return $resp;
     }
 
-	private function suppCommande($req, $resp)
+	private function suppCommande($req, $resp, $args)
 	{
 		$data = $this->data;
 		
 		if($data == "200") {
-			$resp = $resp->withStatus(200);
+			$resp = $resp->withStatus(201);
 			
 		} elseif($data == "403") {
 
@@ -130,6 +130,24 @@ class lbsview
 			$resp = $resp->withStatus(404);
 		}
 		print_r($data);
+		return $resp;
+	}
+
+	private function getFacture($req, $resp, $args)
+	{
+		$data = $this->data;
+
+		if($data == "403") {
+			$resp = $resp->withStatus(403);
+			echo "Erreur  403";
+		} elseif($data == "404") {
+			$resp = $resp->withStatus(404);
+			echo "Erreur  404";
+		} else {
+			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
+			$resp->getBody()->write($data);
+		}
+	
 		return $resp;
 	}
 	
@@ -341,10 +359,10 @@ class lbsview
 				$this->resp = $this->etatCommande($req, $resp, $args);
 				break;
 			case "suppCommande":
-				$this->resp = $this->suppCommande($req, $resp);
+				$this->resp = $this->suppCommande($req, $resp, $args);
 				break;
 			case "getFacture":
-				$this->resp = $this->getFacture($req, $resp);
+				$this->resp = $this->getFacture($req, $resp, $args);
 				break;
 			case "creerCarte":
 				$this->resp = $this->creerCarte($req, $resp, $args);
