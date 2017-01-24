@@ -3,12 +3,29 @@
 require_once("../vendor/autoload.php");
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+
+// Connexion à la BDD
+$connexion = new \lbs\AppInit();
+$pdo = $connexion->bootEloquent("../conf/config.ini");
+
 $configuration = [
 	'settings' => [
 		'displayErrorDetails' => true ]
 ];
 $c = new\Slim\Container($configuration);
 $app = new \Slim\App($c);
+
+// Authentication HTTP Basic pour avoir accès à la carte de fidélité (username : id carte de fidélité, password : mot de passe carte de fidélité)
+$app->add(new \Slim\Middleware\HttpBasicAuthentication([
+    "path" => ["/carte"],
+	"realm" => "Protected",
+    "authenticator" => new \Slim\Middleware\HttpBasicAuthentication\PdoAuthenticator([
+        "pdo" => $pdo,
+        "table" => "cartefidelite",
+        "user" => "id",
+        "hash" => "motDePasse"
+    ])
+]));
 
 /**
  * @apiGroup Categories
