@@ -1,5 +1,303 @@
 [
   {
+    "group": "Carte",
+    "name": "creerCarte",
+    "version": "0.1.0",
+    "type": "post",
+    "url": "/carte",
+    "title": "crée une nouvelle carte de fidélité",
+    "description": "<p>Crée une carte de fidélité avec le mot de passe spécifié. Retourne son identifiant</p> <p>Le crédit lors de la création est de 0 €</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "json",
+            "description": "<p>JSON des données servant à la création de la carte (Exemple : { &quot;motDePasse&quot; : &quot;azerty&quot; })</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Identifiant de la carte de fidélité</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas de succès",
+          "content": "    HTTP/1.1 200 OK\n\n\t{\n\t\t\"id\": 1\n\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Pas de données comportant les informations afin de créer la carte de fidélité.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": \"pas de données : http://localhost/LeBonSandwichEnLigne/api/carte\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"veuillez spécifier un mot de passe pour cette carte de fidélité : http://localhost/LeBonSandwichEnLigne/api/carte\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "././/api.php",
+    "groupTitle": "Carte"
+  },
+  {
+    "group": "Carte",
+    "name": "lireCarte",
+    "version": "0.1.0",
+    "type": "post",
+    "url": "/carte/id",
+    "title": "Lit une carte de fidélité",
+    "description": "<p>Renvoit un token à usage unique ainsi que le montant</p> <p>le mot de passe stocké et le mot de passe envoyé doivent correspondre</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Identifiant de la carte de fidélité</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "json",
+            "description": "<p>JSON des données servant à la lecture de la carte (Exemple : { &quot;motDePasse&quot; : &quot;azerty&quot; })</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Identifiant de la carte de fidélité</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token unique généré</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "credit",
+            "description": "<p>Crédit de la carte de fidélité</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas de succès",
+          "content": "    HTTP/1.1 200 OK\n\n\t{\n\t\t\"id\": 1,\n\t\t\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\",\n\t\t\"credit\": 10\n\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Pas de données comportant les informations afin de créer la carte de fidélité.</p>"
+          }
+        ],
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "error",
+            "description": "<p>La carte n'existe pas.</p>"
+          }
+        ],
+        "Erreur : 403": [
+          {
+            "group": "Erreur : 403",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Le mot de passe entré de la carte est incorrect.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": \"pas de données : http://localhost/LeBonSandwichEnLigne/api/carte/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"veuillez spécifier un mot de passe pour cette carte de fidélité : http://localhost/LeBonSandwichEnLigne/api/carte/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\" : \"Ressource non trouvée : http://localhost/LeBonSandwichEnLigne/api/carte/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\" : \"mauvais mot de passe : http://localhost/LeBonSandwichEnLigne/api/carte/1\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "././/api.php",
+    "groupTitle": "Carte"
+  },
+  {
+    "group": "Carte",
+    "name": "payerCarte",
+    "version": "0.1.0",
+    "type": "get",
+    "url": "/carte",
+    "title": "paye une commande en utilisant une carte de fidélité",
+    "description": "<p>Renvoit la commande avec le montant réduit si tel est le cas</p> <p>Le token de la carte doit être fourni (en GET) ainsi que celui de la commande (en GET aussi) Si montant atteint &gt; 100 € =&gt; réduction de 5% accordée sur la commande et montant remis à 0 Une fois payé, on remet le token à null</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Identifiant de la carte de fidélité</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "json",
+            "description": "<p>JSON des données servant à la lecture de la carte (Exemple : { &quot;motDePasse&quot; : &quot;azerty&quot; })</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Identifiant de la carte de fidélité</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token unique généré</p>"
+          },
+          {
+            "group": "Succès : 200",
+            "type": "Number",
+            "optional": false,
+            "field": "credit",
+            "description": "<p>Crédit de la carte de fidélité</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas de succès",
+          "content": "    HTTP/1.1 200 OK\n\n\t{\n\t\t\"commande\": {\n   \t\t\"id\": 1,\n   \t\t\"dateretrait\": \"2017-12-12\",\n   \t\t\"etat\": 1,\n   \t\t\"token\": \"174086\",\n   \t\t\"montant\": 5\n \t}\n\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 401": [
+          {
+            "group": "Erreur : 401",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Token de la commande et/ou de la carte manquant.</p>"
+          }
+        ],
+        "Erreur : 403": [
+          {
+            "group": "Erreur : 403",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Mauvais token de commande.</p>"
+          }
+        ],
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "error",
+            "description": "<p>La commande est déjà payée.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\" : \"token de carte fidélité et de commande exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/carte\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\" : \"mauvais token de commande : http://localhost/LeBonSandwichEnLigne/api/carte\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\" : \"mauvais token de carte : http://localhost/LeBonSandwichEnLigne/api/carte\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"la commande est déjà payée : http://localhost/LeBonSandwichEnLigne/api/carte/1\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "././/api.php",
+    "groupTitle": "Carte"
+  },
+  {
     "group": "Categories",
     "name": "detailsCategorie",
     "version": "0.1.0",
