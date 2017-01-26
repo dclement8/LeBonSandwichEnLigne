@@ -101,13 +101,14 @@ class lbscontrol
 		// { "taillepain" : 1 , "typepain" : 1 , "ingredients" : [1, 3, 4, 9] }
 
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
-		$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		
 		$dataSandwich = json_decode($req->getBody(), true);
 
 		if(\lbs\model\commande::where('id', $id)->get()->toJson() != "[]")
 		{
 			if(isset($_GET["token"]))
 			{
+				$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 				$commande = \lbs\model\commande::find($id);
 				if($commande->token == $token)
 				{
@@ -240,7 +241,6 @@ class lbscontrol
 	public function supprimerSandwich(Request $req, Response $resp, $args)
 	{
 		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
-		$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		$json = "[]";
 
 		if(\lbs\model\sandwich::where('id', $id)->get()->toJson() != "[]")
@@ -248,6 +248,7 @@ class lbscontrol
 			$leSandwich = \lbs\model\sandwich::where('id', $id)->get();
 			if(isset($_GET["token"]))
 			{
+				$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 				$commande = \lbs\model\sandwich::find($id)->belongsTo('\lbs\model\commande', "id_commande")->first();
 				if($commande->token == $token)
 				{
