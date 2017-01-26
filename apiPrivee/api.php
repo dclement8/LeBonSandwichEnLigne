@@ -68,7 +68,7 @@ $app = new \Slim\App($c);
 $app->get('/commandes',
 	function (Request $req, Response $resp, $args)
 	{
-		return (new lbs\control\lbscontrol($this))->toutesCommandes($req, $resp, $args);
+		return (new lbs\control\lbscontrolprive($this))->toutesCommandes($req, $resp, $args);
 	}
 )->setName('toutesCommandes');
 
@@ -120,7 +120,7 @@ $app->get('/commandes',
 $app->get('/commandes/{id}',
 	function (Request $req, Response $resp, $args)
 	{
-		return (new lbs\control\lbscontrol($this))->detailsCommande($req, $resp, $args);
+		return (new lbs\control\lbscontrolprive($this))->detailsCommande($req, $resp, $args);
 	}
 )->setName('detailsCommande');
 
@@ -177,7 +177,7 @@ $app->get('/commandes/{id}',
 $app->post('/commandes/{id}',
 	function (Request $req, Response $resp, $args)
 	{
-		return (new lbs\control\lbscontrol($this))->changementEtat($req, $resp, $args);
+		return (new lbs\control\lbscontrolprive($this))->changementEtat($req, $resp, $args);
 	}
 )->setName('changementEtat');
 
