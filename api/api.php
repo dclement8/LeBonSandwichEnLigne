@@ -1732,7 +1732,31 @@ $app->get('/carte',
 
 )->setName('payerCarte');
 
-$app->get('/facture/{id}',
+/**
+
+ * @apiGroup Sandwichs
+
+ * @apiName getFacture
+
+ * @apiVersion 0.1.0
+ 
+ *
+
+ * @api {get} /getFacture/idate
+
+ *
+
+ * @apiDescription Obtenir une ressource commande selon l'id saisie. Retourne une facture en json.
+
+ * 
+
+ *
+
+ * @apiSuccess (Succès : 200)
+
+
+*/
+$app->get('/getFacture/{id}',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->getFacture($req, $resp, $args);
