@@ -121,7 +121,7 @@ class lbsview
 		if(is_array($this->data))
 		{
 			$json = json_encode($this->data);
-			//$resp = $resp->withHeader('Content-Type', 'application/json');
+			$resp = $resp->withHeader('Content-Type', 'application/json');
 		}
 		else
 		{

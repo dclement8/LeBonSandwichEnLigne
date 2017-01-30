@@ -1461,10 +1461,7 @@ class lbscontrol
 			$resp = $resp->withStatus(404);
 
 			return (new \lbs\view\lbsview($arr))->render('suppCommande', $req, $resp, $args);
-
 		}
-
-		
 	}
 
 	public function getCommande(Request $req, Response $resp, $args) 
@@ -1477,12 +1474,10 @@ class lbscontrol
 				$commande = \lbs\model\commande::find($id);
 				if($commande->token == $token) {
 					$tarifTab = array();
-
 					$sand = \lbs\model\sandwich::where('id_commande', $id)->get();
 					$totalDetails = array();
 					$PrixSandwich = array();
 					$DetailsSandwich = array();
-
 					$json = '{ 
 									"DetailsCommande" : {
 										"NombreSandwich" : '. $sand->count() .' ,
@@ -1491,7 +1486,7 @@ class lbscontrol
 					foreach($sand as $s) {
 							$taille = \lbs\model\taille::where('id', $s->taillepain)->first();
 							$json .= '{ "Taille" : "'.$taille->nom.'" , "TypePain" : "' .$s->typepain. '" , "Prix" : "'.$taille->prix.'" } ,';
-						} 
+						}
 
 						$json = substr($json, 0, -1);
 						
