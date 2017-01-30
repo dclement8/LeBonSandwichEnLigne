@@ -118,36 +118,33 @@ class lbsview
 
 	private function suppCommande($req, $resp, $args)
 	{
-		$data = $this->data;
-		
-		if($data == "200") {
-			$resp = $resp->withStatus(201);
-			
-		} elseif($data == "403") {
-
-			$resp = $resp->withStatus(403);
-		} else {
-			$resp = $resp->withStatus(404);
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			//$resp = $resp->withHeader('Content-Type', 'application/json');
 		}
-		print_r($data);
+		else
+		{
+			$json = $this->data;
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
 		return $resp;
 	}
 
 	private function getFacture($req, $resp, $args)
 	{
-		$data = $this->data;
-
-		if($data == "403") {
-			$resp = $resp->withStatus(403);
-			echo "Erreur  403";
-		} elseif($data == "404") {
-			$resp = $resp->withStatus(404);
-			echo "Erreur  404";
-		} else {
-			$resp = $resp->withStatus(200)->withHeader('Content-Type', 'application/json');
-			$resp->getBody()->write($data);
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
 		}
-	
+		else
+		{
+			$json = $this->data;
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
 		return $resp;
 	}
 	
@@ -317,6 +314,23 @@ class lbsview
 		return $resp;
 	}
 
+	private function getCommande($req, $resp, $args) {
+
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = $this->data;
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+
+	}
+
 	public function render($selector, $req, $resp, $args)
 
 	{
@@ -373,6 +387,9 @@ class lbsview
 			case "payerCarte":
 				$this->resp = $this->payerCarte($req, $resp, $args);
 				break;
+			case "getCommande":
+				$this->resp = $this->getCommande($req, $resp, $args);
+				break;				
 		}
 
 		return $this->resp;
