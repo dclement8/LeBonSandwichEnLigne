@@ -1746,15 +1746,41 @@ $app->get('/carte',
 
  *
 
- * @apiDescription Obtenir une ressource commande selon l'id saisie. Retourne une facture en json.
+ * @apiDescription Obtient une ressource commande selon l'id saisie.
 
- * 
+ * Si l'état de la commande est 4, elle renvoie les informations de la commande (Numéro de la facture, date de retrait de la commande, le nombre de sandwich et le montant de la commande).
+
+ * Si l'état de la commande n'est pas 4, elle ne renvoie rien.
+
+ * @apiParam {string} json JSON des données de facturation (Exemple : { "Facture": {"Numero": "'.$q->id.'", "DateRetrait": "'.$q->dateretrait.'", "NombreSandwich": "'.$totalCount.'", "MontantSandwich": "'.$q->montant.'" } }).
+
+ * @apiSuccess (Succès : 200) {Json} json facture.$_COOKIE
 
  *
 
- *
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
 
- * @apiSuccess (Succès : 200)
+ *     HTTP/1.1 200 OK
+
+ * {
+
+ *		"Facture":
+ 
+ *			{
+	 
+*			"Numero": 12,
+ 
+ *			"DateRetrait": "28/06/2017",
+ 
+ *			"NombreSandwich": 8,
+ 
+ *			"MontantSandwich": 25
+ 
+ *			}
+ 
+ * }
+
+
 
 
 */
