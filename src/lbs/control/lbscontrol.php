@@ -1491,7 +1491,7 @@ class lbscontrol
 					foreach($sand as $s) {
 							$taille = \lbs\model\taille::where('id', $s->taillepain)->first();
 							$json .= '{ "Taille" : "'.$taille->nom.'" , "TypePain" : "' .$s->typepain. '" , "Prix" : "'.$taille->prix.'" } ,';
-						}
+						} 
 
 						$json = substr($json, 0, -1);
 						
