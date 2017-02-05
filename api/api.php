@@ -1112,7 +1112,6 @@ $app->get('/carte',
  *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1"
  *     }
  *
- * @apiError (Erreur : 404)
  *
  * @apiError (Erreur : 404) Commande inexistante ou vide.
  *     HTTP/1.1 404 Not Found
@@ -1183,7 +1182,6 @@ $app->get('/getFacture/{id}',
  *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1"
  *     }
  *
- * @apiError (Erreur : 404)
  *
  * @apiError (Erreur : 404) Commande inexistante ou vide.
  *     HTTP/1.1 404 Not Found
@@ -1268,7 +1266,6 @@ $app->get('/suppCommande/{id}',
  *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1"
  *     }
  *
- * @apiError (Erreur : 404)
  *
  * @apiError (Erreur : 404) Commande inexistante ou vide.
  *     HTTP/1.1 404 Not Found

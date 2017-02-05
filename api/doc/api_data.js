@@ -1345,6 +1345,194 @@ define({ "api": [
   },
   {
     "group": "Sandwichs",
+    "name": "getCommande",
+    "version": "0.1.0",
+    "type": "get",
+    "url": "/getCommande/id",
+    "title": "",
+    "description": "<p>Obtient une ressource commande selon l'id saisie. Si l'état de la commande est 4, elle renvoie les informations de la commande (Numéro de la facture, date de retrait de la commande, le nombre de sandwich et le montant de la commande). Si l'état de la commande n'est pas 4, elle ne renvoie rien.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "json",
+            "description": "<p>JSON des données de facturation (Exemple : { &quot;DetailsCommande&quot;: {&quot;NombreSandwich&quot;: &quot;'.$sand-&gt;count().'&quot;, &quot;Sandwichs&quot;: [{ &quot;Taille&quot; : &quot;'.$taille-&gt;nom.'&quot; , &quot;TypePain&quot; : &quot;' .$s-&gt;typepain. '&quot; , &quot;Prix&quot; : &quot;'.$taille-&gt;prix.'&quot; }] } }).</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Json",
+            "optional": false,
+            "field": "json",
+            "description": "<p>facture.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas de succès",
+          "content": "    HTTP/1.1 200 OK\n{\n\t\t\"DetailsCommande\":\n\t\t\t{\n\t\t\t\"NombreSandwich\": 2,\n\t\t\t\"Sandwichs\": \"[\n\t\t\t\t{\"Taille : \"ogre\", \"TypePain : \"2\", \"Prix\" : 3,00},\n\t\t\t\t{\"Taille : \"Petite Faim\", \"TypePain : \"1\", \"Prix\" : 1,00}\n\t\t\t]\",\n\t\t\t}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1</p>"
+          }
+        ],
+        "Erreur : 401": [
+          {
+            "group": "Erreur : 401",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Token de la commande manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1</p>"
+          }
+        ],
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "Commande",
+            "description": "<p>inexistante ou vide. HTTP/1.1 404 Not Found</p> <pre><code>{   &quot;error&quot; : &quot;Commande inexistante ou vide : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1&quot; }</code></pre>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"Token manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\" : \"token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\" : \"mauvais token : http://localhost/LeBonSandwichEnLigne/api/getCommande/1?token=174086\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "././/api.php",
+    "groupTitle": "Sandwichs"
+  },
+  {
+    "group": "Sandwichs",
+    "name": "getFacture",
+    "version": "0.1.0",
+    "type": "get",
+    "url": "/getFacture/id",
+    "title": "",
+    "description": "<p>Obtient une ressource commande selon l'id saisie. Si l'état de la commande est 4, elle renvoie les informations de la commande (Numéro de la facture, date de retrait de la commande, le nombre de sandwich et le montant de la commande). Si l'état de la commande n'est pas 4, elle ne renvoie rien.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "json",
+            "description": "<p>JSON des données de facturation (Exemple : { &quot;Facture&quot;: {&quot;Numero&quot;: &quot;'.$q-&gt;id.'&quot;, &quot;DateRetrait&quot;: &quot;'.$q-&gt;dateretrait.'&quot;, &quot;NombreSandwich&quot;: &quot;'.$totalCount.'&quot;, &quot;MontantSandwich&quot;: &quot;'.$q-&gt;montant.'&quot; } }).</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "type": "Json",
+            "optional": false,
+            "field": "json",
+            "description": "<p>facture.$_COOKIE</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas de succès",
+          "content": "    HTTP/1.1 200 OK\n{\n\t\t\"Facture\":\n\t\t\t{\n\t\t\t\"Numero\": 12,\n\t\t\t\"DateRetrait\": \"28/06/2017\",\n\t\t\t\"NombreSandwich\": 8,\n\t\t\t\"MontantSandwich\": 25\n\t\t\t}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1</p>"
+          }
+        ],
+        "Erreur : 401": [
+          {
+            "group": "Erreur : 401",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Token de la commande manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1</p>"
+          }
+        ],
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "Commande",
+            "description": "<p>inexistante ou vide. HTTP/1.1 404 Not Found</p> <pre><code>{   &quot;error&quot; : &quot;Commande inexistante ou vide&quot; }</code></pre>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"Token manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\" : \"token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\" : \"mauvais token : http://localhost/LeBonSandwichEnLigne/api/getFacture/1?token=174086\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "././/api.php",
+    "groupTitle": "Sandwichs"
+  },
+  {
+    "group": "Sandwichs",
     "name": "modifierSandwich",
     "version": "0.1.0",
     "type": "post",
@@ -1474,6 +1662,92 @@ define({ "api": [
         {
           "title": "exemple de réponse en cas d'erreur",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"la donnée ingrédient n'est pas un tableau : http://localhost/LeBonSandwichEnLigne/api/sandwichs/1?token=174086\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "././/api.php",
+    "groupTitle": "Sandwichs"
+  },
+  {
+    "group": "Sandwichs",
+    "name": "suppCommande",
+    "version": "0.1.0",
+    "type": "get",
+    "url": "/suppCommande/id",
+    "title": "",
+    "description": "<p>Supprime une ressource commande selon l'id saisie. Si l'état de la commande est 1, elle supprime commande. Si l'état de la commande n'est pas 1, elle ne supprime rien.</p>",
+    "success": {
+      "fields": {
+        "Succès : 201": [
+          {
+            "group": "Succès : 201",
+            "type": "Json",
+            "optional": false,
+            "field": "json",
+            "description": "<p>facture.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas de succès",
+          "content": "HTTP/1.1 201 OK\n\n{\n  \"error\" : \"Commande  supprime avec succes : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 400": [
+          {
+            "group": "Erreur : 400",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1</p>"
+          }
+        ],
+        "Erreur : 401": [
+          {
+            "group": "Erreur : 401",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Token de la commande manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1</p>"
+          }
+        ],
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "Commande",
+            "description": "<p>inexistante ou vide. HTTP/1.1 404 Not Found</p> <pre><code>{   &quot;error&quot; : &quot;Commande inexistante ou vide : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1&quot;&quot; }</code></pre>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\" : \"Token manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\" : \"token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\" : \"mauvais token : http://localhost/LeBonSandwichEnLigne/api/getFacture/1?token=174086\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\" : \"Impossible  de supprimer la commande car l'etat est 2 : http://localhost/LeBonSandwichEnLigne/api/getFacture/1?token=174086\"\n}",
           "type": "json"
         }
       ]
