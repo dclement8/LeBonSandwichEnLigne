@@ -1742,7 +1742,7 @@ $app->get('/carte',
  
  *
 
- * @api {get} /getFacture/idate
+ * @api {get} /getFacture/id
 
  *
 
@@ -1768,7 +1768,7 @@ $app->get('/carte',
  
  *			{
 	 
-*			"Numero": 12,
+ *			"Numero": 12,
  
  *			"DateRetrait": "28/06/2017",
  
@@ -1780,8 +1780,95 @@ $app->get('/carte',
  
  * }
 
+ *
 
+ * @apiError (Erreur : 400) error Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1
 
+ *
+
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 400 Bad Request
+
+ *
+
+ *     {
+
+ *       "error" : "Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1"
+
+ *     }
+
+ *
+
+ *
+
+ * @apiError (Erreur : 400) error Token manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1
+
+ *
+
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 400 Bad Request
+
+ *
+
+ *     {
+
+ *       "error" : "Token manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1"
+
+ *     }
+
+ *
+
+ * @apiError (Erreur : 401) error Token de la commande manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1
+
+ *
+
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 401 Unauthorized
+
+ *
+
+ *     {
+
+ *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getFacture/1"
+
+ *     }
+
+ *
+
+ * @apiError (Erreur : 404)
+
+ *
+
+ * @apiError (Erreur : 404) Commande inexistante ou vide.
+
+ *     HTTP/1.1 404 Not Found
+
+ *
+
+ *     {
+
+ *       "error" : "Commande inexistante ou vide"
+
+ *     }
+
+ *
+ 
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 403 Forbidden
+
+ *
+
+ *     {
+
+ *       "error" : "mauvais token : http://localhost/LeBonSandwichEnLigne/api/getFacture/1?token=174086"
+
+ *     }
+
+ *
 
 */
 $app->get('/getFacture/{id}',
@@ -1791,6 +1878,147 @@ $app->get('/getFacture/{id}',
 	}
 )->setName('getFacture');
 
+/**
+
+ * @apiGroup Sandwichs
+
+ * @apiName suppCommande
+
+ * @apiVersion 0.1.0
+ 
+ *
+
+ * @api {get} /suppCommande/id
+
+ *
+
+ * @apiDescription Supprime une ressource commande selon l'id saisie.
+
+ * Si l'état de la commande est 1, elle supprime commande.
+
+ * Si l'état de la commande n'est pas 1, elle ne supprime rien.
+
+ * @apiSuccess (Succès : 201) {Json} json facture.
+
+ *
+
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+
+ *     HTTP/1.1 201 OK
+
+ *
+
+ *     {
+
+ *       "error" : "Commande  supprime avec succes : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1"
+
+ *     }
+
+ *
+
+ * @apiError (Erreur : 400) error Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1
+
+ *
+
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 400 Bad Request
+
+ *
+
+ *     {
+
+ *       "error" : "Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1"
+
+ *     }
+
+ *
+
+ *
+
+ * @apiError (Erreur : 400) error Token manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1
+
+ *
+
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 400 Bad Request
+
+ *
+
+ *     {
+
+ *       "error" : "Token manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1"
+
+ *     }
+
+ *
+
+ * @apiError (Erreur : 401) error Token de la commande manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1
+
+ *
+
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 401 Unauthorized
+
+ *
+
+ *     {
+
+ *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1"
+
+ *     }
+
+ *
+
+ * @apiError (Erreur : 404)
+
+ *
+
+ * @apiError (Erreur : 404) Commande inexistante ou vide.
+
+ *     HTTP/1.1 404 Not Found
+
+ *
+
+ *     {
+
+ *       "error" : "Commande inexistante ou vide : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/suppCommande/1""
+
+ *     }
+
+ *
+ 
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 403 Forbidden
+
+ *
+
+ *     {
+
+ *       "error" : "mauvais token : http://localhost/LeBonSandwichEnLigne/api/getFacture/1?token=174086"
+
+ *     }
+
+ *
+
+* @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 403 Forbidden
+
+ *
+
+ *     {
+
+ *       "error" : "Impossible  de supprimer la commande car l'etat est 2 : http://localhost/LeBonSandwichEnLigne/api/getFacture/1?token=174086"
+
+ *     }
+
+ *
+
+*/
 $app->get('/suppCommande/{id}',
 	function (Request $req, Response $resp, $args)
 	{
@@ -1798,6 +2026,147 @@ $app->get('/suppCommande/{id}',
 	}
 )->setName('suppCommande');
 
+/**
+
+ * @apiGroup Sandwichs
+
+ * @apiName getCommande
+
+ * @apiVersion 0.1.0
+ 
+ *
+
+ * @api {get} /getCommande/id
+
+ *
+
+ * @apiDescription Obtient une ressource commande selon l'id saisie.
+
+ * Si l'état de la commande est 4, elle renvoie les informations de la commande (Numéro de la facture, date de retrait de la commande, le nombre de sandwich et le montant de la commande).
+
+ * Si l'état de la commande n'est pas 4, elle ne renvoie rien.
+
+ * @apiParam {string} json JSON des données de facturation (Exemple : { "DetailsCommande": {"NombreSandwich": "'.$sand->count().'", "Sandwichs": [{ "Taille" : "'.$taille->nom.'" , "TypePain" : "' .$s->typepain. '" , "Prix" : "'.$taille->prix.'" }] } }).
+
+ * @apiSuccess (Succès : 200) {Json} json facture.
+
+ *
+
+ * @apiSuccessExample {json} exemple de réponse en cas de succès
+
+ *     HTTP/1.1 200 OK
+
+ * {
+
+ *		"DetailsCommande":
+ 
+ *			{
+	 
+ *			"NombreSandwich": 2,
+ 
+ *			"Sandwichs": "[
+
+ *				{"Taille : "ogre", "TypePain : "2", "Prix" : 3,00},
+ 
+ *				{"Taille : "Petite Faim", "TypePain : "1", "Prix" : 1,00}
+
+ *			]",
+
+ *			}
+
+ * }
+
+ *
+
+ * @apiError (Erreur : 400) error Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1
+
+ *
+
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 400 Bad Request
+
+ *
+
+ *     {
+
+ *       "error" : "Token incorrect : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1"
+
+ *     }
+
+ *
+
+ *
+
+ * @apiError (Erreur : 400) error Token manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1
+
+ *
+
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 400 Bad Request
+
+ *
+
+ *     {
+
+ *       "error" : "Token manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1"
+
+ *     }
+
+ *
+
+ * @apiError (Erreur : 401) error Token de la commande manquant : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1
+
+ *
+
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 401 Unauthorized
+
+ *
+
+ *     {
+
+ *       "error" : "token exigé : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1"
+
+ *     }
+
+ *
+
+ * @apiError (Erreur : 404)
+
+ *
+
+ * @apiError (Erreur : 404) Commande inexistante ou vide.
+
+ *     HTTP/1.1 404 Not Found
+
+ *
+
+ *     {
+
+ *       "error" : "Commande inexistante ou vide : http://localhost/lbs/publique/LeBonSandwichEnLigne/api/getCommande/1"
+
+ *     }
+
+ *
+ 
+ * @apiErrorExample {json} exemple de réponse en cas d'erreur
+
+ *     HTTP/1.1 403 Forbidden
+
+ *
+
+ *     {
+
+ *       "error" : "mauvais token : http://localhost/LeBonSandwichEnLigne/api/getCommande/1?token=174086"
+
+ *     }
+
+ *
+
+*/
 $app->get('/getCommande/{id}',
 	function (Request $req, Response $resp, $args)
 	{
