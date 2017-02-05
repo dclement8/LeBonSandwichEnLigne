@@ -664,4 +664,202 @@ class lbscontrol
         $carte->save();
         return (new \lbs\view\lbsview($commande))->render('payerCarte', $req, $resp, $args);
     }
+
+    public function getFacture(Request $req, Response $resp, $args) 
+	{
+		// Obtient une facture
+		// L'état de la commande doit être 4
+		// Retourne les données en json
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		if(\lbs\model\commande::where('id', $id)->get()->toJson() !="[]") {
+			if(isset($_GET["token"])) {
+				$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+				$commande = \lbs\model\commande::where('id', $id)->first();
+
+					$comm = \lbs\model\commande::with('sandwich')
+					->where('id', $id)->get();
+
+					$count = \lbs\model\commande::with('sandwich')
+					->where('id', $id);
+
+					if($commande->token == $token) { 
+						foreach($comm as $q) {
+							
+							if($q->etat == 4) {
+								$sand = $q->sandwich;
+								$totalCount = 0;
+								$json = "";
+								foreach($sand as $s) {
+									$totalSand = array();
+									$totalSand[] = $s->id;
+									$totalCount = $totalCount + count($totalSand);
+								}
+									$json =	'{ "Facture": {	"Numero": "'.$q->id.'",	"DateRetrait": "'.$q->dateretrait.'", "NombreSandwich": "'.$totalCount.'", "MontantSandwich": "'.$q->montant.'" } }';
+									
+									$arr = array('error' => 'Facture retourné avec succès : '.$req->getUri());
+
+									$resp = $resp->withStatus(200);
+
+									return (new \lbs\view\lbsview($json))->render('getFacture', $req, $resp, $args );
+							}
+							else {
+									$arr = array('error' => 'Impossible d\'afficher la facture la commande car son etat est '. $q->etat .' : '.$req->getUri());
+
+									$resp = $resp->withStatus(403);
+
+									return (new \lbs\view\lbsview($arr))->render('getFacture', $req, $resp, $args);								
+							}
+						}
+					} else {
+						$arr = array('error' => 'Token incorrect : '.$req->getUri());
+
+						$resp = $resp->withStatus(400);
+
+						return (new \lbs\view\lbsview($arr))->render('getFacture', $req, $resp, $args);						
+					}
+
+			} else {
+					$arr = array('error' => 'Token manquant : '.$req->getUri());
+
+					$resp = $resp->withStatus(400);
+
+					return (new \lbs\view\lbsview($arr))->render('getFacture', $req, $resp, $args);				
+			}
+		}
+		else {
+
+				$arr = array('error' => 'Commande inexistante ou vide : '.$req->getUri());
+
+				$resp = $resp->withStatus(404);
+
+				return (new \lbs\view\lbsview($arr))->render('getFacture', $req, $resp, $args);	
+		}
+	}
+
+    public function suppCommande(Request $req, Response $resp, $args)
+	{
+		// Supprime une commande
+		// L'état doit être 1
+		// Retourne un json
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		if(\lbs\model\commande::where('id', $id)->get()->toJson() !="[]")
+		{
+				if(isset($_GET["token"]))
+				{
+
+					$commande = \lbs\model\commande::where('id', $id)->first();
+
+					$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+					if($commande->token == $token) {
+
+								if($commande->etat == 1) {
+
+									\lbs\model\commande::destroy($id);
+									$arr = array('error' => 'Commande  supprime avec succes : '.$req->getUri());
+
+									$resp = $resp->withStatus(201);
+
+									return (new \lbs\view\lbsview($arr))->render('suppCommande', $req, $resp, $args);
+								}
+								else {
+
+									$arr = array('error' => 'Impossible  de supprimer la commande car l\'etat est '. $commande->etat .' : '.$req->getUri());
+
+									$resp = $resp->withStatus(403);
+
+									return (new \lbs\view\lbsview($arr))->render('suppCommande', $req, $resp, $args);
+								}
+							
+					} else {
+
+						$arr = array('error' => 'Token incorrect : '.$req->getUri());
+
+						$resp = $resp->withStatus(400);
+
+						return (new \lbs\view\lbsview($arr))->render('suppCommande', $req, $resp, $args);	
+					}
+
+				} else {
+
+					$arr = array('error' => 'Token manquant : '.$req->getUri());
+
+					$resp = $resp->withStatus(400);
+
+					return (new \lbs\view\lbsview($arr))->render('getCommande', $req, $resp, $args);					
+				}
+
+		} else 
+
+		{
+			$arr = array('error' => 'Commande inexistante: '.$req->getUri());
+
+			$resp = $resp->withStatus(404);
+
+			return (new \lbs\view\lbsview($arr))->render('suppCommande', $req, $resp, $args);
+		}
+	}
+
+	public function getCommande(Request $req, Response $resp, $args) 
+	{
+		// Retourne des informations sur une commande
+		// Retourne un json
+		$id = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		if(\lbs\model\commande::where('id', $id)->get()->toJson() !="[]") {
+			if(isset($_GET["token"]))
+			{
+				$token = filter_var($_GET["token"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+				$commande = \lbs\model\commande::find($id);
+				if($commande->token == $token) {
+					$tarifTab = array();
+					$sand = \lbs\model\sandwich::where('id_commande', $id)->get();
+					$totalDetails = array();
+					$PrixSandwich = array();
+					$DetailsSandwich = array();
+					$json = '{ 
+									"DetailsCommande" : {
+										"NombreSandwich" : '. $sand->count() .' ,
+										"Sandwichs" :  [';
+
+					foreach($sand as $s) {
+							$taille = \lbs\model\taille::where('id', $s->taillepain)->first();
+							$json .= '{ "Taille" : "'.$taille->nom.'" , "TypePain" : "' .$s->typepain. '" , "Prix" : "'.$taille->prix.'" } ,';
+						}
+
+						$json = substr($json, 0, -1);
+						
+						$json .= '] } }';
+
+						$arr = array('error' => 'Ok : '.$req->getUri());
+
+						$resp = $resp->withStatus(200);
+
+						return (new \lbs\view\lbsview($json))->render('getCommande', $req, $resp, $args );
+				}
+				else
+				{
+					$arr = array('error' => 'Token incorrect : '.$req->getUri());
+
+					$resp = $resp->withStatus(400);
+
+					return (new \lbs\view\lbsview($arr))->render('getCommande', $req, $resp, $args);
+				}
+			}
+			else
+			{
+				$arr = array('error' => 'Token manquant : '.$req->getUri());
+
+				$resp = $resp->withStatus(400);
+
+				return (new \lbs\view\lbsview($arr))->render('getCommande', $req, $resp, $args);
+			}
+		} else {
+			$arr = array('error' => 'Commande inexistante : '.$req->getUri());
+
+			$resp = $resp->withStatus(404);
+
+			return (new \lbs\view\lbsview($arr))->render('getCommande', $req, $resp, $args);
+		}
+	}
 }

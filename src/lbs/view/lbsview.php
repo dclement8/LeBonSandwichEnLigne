@@ -282,6 +282,56 @@ class lbsview
 		return $resp;
 	}
 
+	private function getFacture($req, $resp, $args)
+	{
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = $this->data;
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+	}
+
+	private function suppCommande($req, $resp, $args)
+	{
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = $this->data;
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+	}
+
+	private function getCommande($req, $resp, $args) {
+
+		if(is_array($this->data))
+		{
+			$json = json_encode($this->data);
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		else
+		{
+			$json = $this->data;
+			$resp = $resp->withHeader('Content-Type', 'application/json');
+		}
+		$resp->getBody()->write($json);
+		return $resp;
+
+	}
+
+
 	public function render($selector, $req, $resp, $args)
 	{
 		switch($selector)
@@ -330,6 +380,15 @@ class lbsview
 				break;
 			case "payerCarte":
 				$this->resp = $this->payerCarte($req, $resp, $args);
+				break;
+			case "getFacture":
+				$this->resp = $this->getFacture($req, $resp, $args);
+				break;
+			case "suppCommande":
+				$this->resp = $this->suppCommande($req, $resp, $args);
+				break;
+			case "getCommande":
+				$this->resp = $this->getCommande($req, $resp, $args);
 				break;
 		}
 
