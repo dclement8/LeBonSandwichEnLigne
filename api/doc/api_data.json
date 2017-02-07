@@ -64,7 +64,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Carte"
   },
   {
@@ -179,7 +179,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Carte"
   },
   {
@@ -294,7 +294,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Carte"
   },
   {
@@ -385,7 +385,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Categories"
   },
   {
@@ -476,7 +476,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Categories"
   },
   {
@@ -528,7 +528,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Categories"
   },
   {
@@ -641,7 +641,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Commandes"
   },
   {
@@ -718,7 +718,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Commandes"
   },
   {
@@ -867,7 +867,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Commandes"
   },
   {
@@ -991,7 +991,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Commandes"
   },
   {
@@ -1165,8 +1165,36 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Commandes"
+  },
+  {
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "varname1",
+            "description": "<p>No type.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "varname2",
+            "description": "<p>With type.</p>"
+          }
+        ]
+      }
+    },
+    "type": "",
+    "url": "",
+    "version": "0.0.0",
+    "filename": "./doc_old/main.js",
+    "group": "D__Wamp_www_lbs_publique_LeBonSandwichEnLigne_api_doc_old_main_js",
+    "groupTitle": "D__Wamp_www_lbs_publique_LeBonSandwichEnLigne_api_doc_old_main_js",
+    "name": ""
   },
   {
     "group": "Ingredients",
@@ -1249,7 +1277,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Ingredients"
   },
   {
@@ -1340,7 +1368,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Ingredients"
   },
   {
@@ -1348,7 +1376,7 @@
     "name": "getCommande",
     "version": "0.1.0",
     "type": "get",
-    "url": "/getCommande/id",
+    "url": "/commandes/id",
     "title": "",
     "description": "<p>Obtient une ressource commande selon l'id saisie. Si l'état de la commande est 4, elle renvoie les informations de la commande (Numéro de la facture, date de retrait de la commande, le nombre de sandwich et le montant de la commande). Si l'état de la commande n'est pas 4, elle ne renvoie rien.</p>",
     "parameter": {
@@ -1434,7 +1462,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Sandwichs"
   },
   {
@@ -1442,7 +1470,7 @@
     "name": "getFacture",
     "version": "0.1.0",
     "type": "get",
-    "url": "/getFacture/id",
+    "url": "/commandes/id/facture",
     "title": "",
     "description": "<p>Obtient une ressource commande selon l'id saisie. Si l'état de la commande est 4, elle renvoie les informations de la commande (Numéro de la facture, date de retrait de la commande, le nombre de sandwich et le montant de la commande). Si l'état de la commande n'est pas 4, elle ne renvoie rien.</p>",
     "parameter": {
@@ -1528,7 +1556,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Sandwichs"
   },
   {
@@ -1666,15 +1694,15 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Sandwichs"
   },
   {
     "group": "Sandwichs",
     "name": "suppCommande",
     "version": "0.1.0",
-    "type": "get",
-    "url": "/suppCommande/id",
+    "type": "delete",
+    "url": "/commandes/id",
     "title": "",
     "description": "<p>Supprime une ressource commande selon l'id saisie. Si l'état de la commande est 1, elle supprime commande. Si l'état de la commande n'est pas 1, elle ne supprime rien.</p>",
     "success": {
@@ -1752,7 +1780,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Sandwichs"
   },
   {
@@ -1845,7 +1873,7 @@
         }
       ]
     },
-    "filename": "././/api.php",
+    "filename": "./api.php",
     "groupTitle": "Sandwichs"
   }
 ]
