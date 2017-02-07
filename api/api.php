@@ -1064,7 +1064,7 @@ $app->get('/carte',
  * @apiName getFacture
  * @apiVersion 0.1.0
  *
- * @api {get} /getFacture/id
+ * @api {get} /commandes/id/facture
  *
  * @apiDescription Obtient une ressource commande selon l'id saisie.
  * Si l'état de la commande est 4, elle renvoie les informations de la commande (Numéro de la facture, date de retrait de la commande, le nombre de sandwich et le montant de la commande).
@@ -1128,7 +1128,7 @@ $app->get('/carte',
  *     }
  *
 */
-$app->get('/getFacture/{id}',
+$app->get('/commandes/{id}/facture',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->getFacture($req, $resp, $args);
@@ -1140,7 +1140,7 @@ $app->get('/getFacture/{id}',
  * @apiName suppCommande
  * @apiVersion 0.1.0
  *
- * @api {get} /suppCommande/id
+ * @api {delete} /commandes/id
  *
  * @apiDescription Supprime une ressource commande selon l'id saisie.
  * Si l'état de la commande est 1, elle supprime commande.
@@ -1205,7 +1205,7 @@ $app->get('/getFacture/{id}',
  *     }
  *
 */
-$app->get('/suppCommande/{id}',
+$app->delete('/commandes/{id}',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->suppCommande($req, $resp, $args);
@@ -1217,7 +1217,7 @@ $app->get('/suppCommande/{id}',
  * @apiName getCommande
  * @apiVersion 0.1.0
  *
- * @api {get} /getCommande/id
+ * @api {get} /commandes/id
  *
  * @apiDescription Obtient une ressource commande selon l'id saisie.
  * Si l'état de la commande est 4, elle renvoie les informations de la commande (Numéro de la facture, date de retrait de la commande, le nombre de sandwich et le montant de la commande).
@@ -1282,7 +1282,7 @@ $app->get('/suppCommande/{id}',
  *     }
  *
 */
-$app->get('/getCommande/{id}',
+$app->get('/commandes/{id}',
 	function (Request $req, Response $resp, $args)
 	{
 		return (new lbs\control\lbscontrol($this))->getCommande($req, $resp, $args);
